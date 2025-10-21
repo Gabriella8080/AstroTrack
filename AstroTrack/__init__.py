@@ -1,4 +1,4 @@
-from .preprocess import load_data
+from .preprocess import load_satellite_data
 from .satcon_properties import (
     get_norads,
     filter_by_norads,
