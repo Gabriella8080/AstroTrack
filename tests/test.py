@@ -6,7 +6,7 @@ from AstroTrack.doppler_analysis import check_doppler_resolution
 
 data = load_satellite_data(
     tle_file="LEO_TLE_file_14_06_2025_time_17_10.txt",
-    target_date=datetime(2025,10,12,12,0,0),
+    target_date=datetime(2025,6,15,12,25,8),
     obs_len=3600,
     traj_res=60,
     obs_lat=51.5,
