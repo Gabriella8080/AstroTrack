@@ -82,10 +82,8 @@ This module is useful for creating subsets of satellite populations and analysin
 - `filter_by_time(all_sat_data, start_time, end_time)`: Select satellites visible in a time range (parameters are `datetime` objects).
 - `filter_nth(all_sat_data, n=1)`: Keep every nth satellite from the dataset.
 - `filter_custom(all_sat_data, custom_fn)`: Filter using a custom user-defined function.
----
 
 **Satellite Properties & Plots:**
-
 
 ```python
 from AstroTrack.satcon_properties import (
@@ -195,7 +193,7 @@ check_doppler_resolution(
 - `marker_color`: Optional plotting parameter.
 ---
 
-**4. Animations (`satcon_animate`)**
+**4. Trajectory Animations (`satcon_animate`)**
 
 ```python
 from AstroTrack.satcon_animate import animate_trajectories
@@ -222,7 +220,7 @@ animate_trajectories(
 - `start_time`: Datetime object defining start of animation.
 ---
 
-**5. Spectral Analysis against Satellite Flyovers (`psd_analysis`)**
+**5. Spectral Analysis with Satellite Metrics (`psd_analysis`)**
 
 ```python
 from AstroTrack.psd_analysis import (
@@ -241,41 +239,75 @@ load_hdf5(
 
 plot_psd_with_satellite_metric(
     spectra: np.ndarray,
-    utc_timestamps: list[str],
-    all_satellite_data: list[dict],
-    variable: str = "Elevations",
-    bandwidth: float = 200,
-    freq_low_mhz: float = 40,
-    freq_high_mhz: float = 170,
-    v_min: float = 1e14,
-    v_max: float = 8e16,
-    show_legend: bool = False,
-    threshold: float = None,
-    vertical_lines: list[str] = None,
-    cmap: str = "Magma"
+    timestamps: list[str],
+    satellite_data: list[dict],
+    variable: str="Elevations",
+    bandwidth: float=200,
+    freq_low_mhz: float=40,
+    freq_high_mhz: float=170,
+    v_min: float=1e14,
+    v_max: float=8e16,
+    show_legend: bool=False,
+    threshold: float=None,
+    vertical_lines: list[str]=None,
+    cmap: str="Magma"
 )
 
 plot_psd_satellite_time_series(
     spectra: np.ndarray,
-    utc_timestamps: list[str],
-    all_sat_data: list[dict],
-    norad_list: list[str] = None,
-    satellite_variable: str = "Elevations",
-    R: float = 2000,
-    psd_freq_ranges: list[tuple] = None,
-    target_freqs_mhz: list[float] = None,
-    bandwidth: int = 200,
-    vmin: float = 1e14,
-    vmax: float = 8e16,
-    cmap: str = "magma",
-    line_colors: list[str] = None,
-    threshold: float = None,
-    vertical_lines: list[str] = None
+    timestamps: list[str],
+    satellite_data: list[dict],
+    norad_list: list[str]=None,
+    satellite_variable: str="Elevations",
+    R: float=2000,
+    psd_freq_ranges: list[tuple]=None,
+    target_freqs_mhz: list[float]=None,
+    bandwidth: int=200,
+    vmin: float=1e14,
+    vmax: float=8e16,
+    cmap: str="magma",
+    line_colors: list[str]=None,
+    threshold: float=None,
+    vertical_lines: list[str]=None
 )
 
 ```
 
 **User Inputs**:
-- `duration_hours`: Duration of satellite propagation in animation in hours.
-- `step_seconds`: Time step between animation frames in seconds.
-- `start_time`: Datetime object defining start of animation.
+- `spectra`: Two-dimensional Power Spectral Density (PSD) array, with time x frequency.
+- `timestamps`: UTC Timestamp strings per time bin.
+- `bandwidth`: Experiment bandwidth in MegaHertz.
+- `freq_low_mhz`, `freq_high_mhz`: Chosen upper and lower frequency bounds for analysis in MegaHertz.
+- `psd_freq_ranges`: List of frequency ranges for multi-panel analysis such that [(low1, high1), (low2, high2), ...] in MegaHertz.
+- `norad_list`: List of NORAD ID's to only select specific satellites for plotting their metric.
+- `threshold`: Variable threshold to hide satellite metrics beyond.
+- `vmin`, `vmax`, `cmap`: Optional plotting parameters.
+
+---
+
+Example Workflow:
+----------
+```python
+from datetime import datetime
+from AstroTrack.preprocess import load_satellite_data
+from AstroTrack.satcon_properties import filter_by_norads
+from AstroTrack.doppler_analysis import check_doppler_resolution
+
+# Load satellite data:
+data = load_satellite_data(
+    tle_file="LEO_TLE_file.txt",
+    target_date=datetime(2025,6,15,12,25,8),
+    obs_len=3600,
+    traj_res=60,
+    obs_lat=51.5,
+    obs_lon=-0.1,
+    R=2000,
+    satcon="OneWeb"
+)
+
+# Filter for a specific satellite:
+subset = filter_by_norads(data, exact_id=63115)
+
+# Check Doppler resolution:
+check_doppler_resolution(subset, f0_array=[110e6, 137.5e6])
+```
