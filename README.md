@@ -37,7 +37,7 @@ Quickstart
 ----------
 
 AstroTrack is structured into several modules, where `preprocess` must be run in order to initialise the satellite data to be used across the other modules complementarily. We provide a brief overview below of the key functions and example usage across all five functional modules, with some example variable labels to guide a user. 
----
+
 
 **1. Preprocessing and Loading Satellite Data (`preprocess`)**
 
@@ -82,6 +82,7 @@ This module is useful for creating subsets of satellite populations and analysin
 - `filter_by_time(all_sat_data, start_time, end_time)`: Select satellites visible in a time range (parameters are `datetime` objects).
 - `filter_nth(all_sat_data, n=1)`: Keep every nth satellite from the dataset.
 - `filter_custom(all_sat_data, custom_fn)`: Filter using a custom user-defined function.
+---
 
 **Satellite Properties & Plots:**
 
@@ -158,6 +159,7 @@ orbit_duration = np.arange(0, 3600, 1)  # in seconds
 # Generate time array:
 epochs_of_orbit = ts.utc(2025, 1, 1, 10, 15, 0 + orbit_duration)
 ```
+---
 
 **3. Doppler Analysis (`doppler_analysis`)**
 
@@ -191,6 +193,7 @@ check_doppler_resolution(
 - `resolution`: Frequency resolution of experiment in Hertz.
 - `time_window`: Half-width of visibility time over experiment in minutes.
 - `marker_color`: Optional plotting parameter.
+---
 
 **4. Animations (`satcon_animate`)**
 
@@ -217,6 +220,7 @@ animate_trajectories(
 - `duration_hours`: Duration of satellite propagation in animation in hours.
 - `step_seconds`: Time step between animation frames in seconds.
 - `start_time`: Datetime object defining start of animation.
+---
 
 **5. Spectral Analysis against Satellite Flyovers (`psd_analysis`)**
 
