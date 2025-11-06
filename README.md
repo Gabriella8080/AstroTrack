@@ -60,15 +60,14 @@ data = load_satellite_data(
 ```
 
 User Inputs
------------
 
-- **tle_file**: Path to a TLE file. Can be a single TLE text file (2 lines per satellite) or a catalogue from CelesTrak.
-- **target_date**: Observation date and time as a `datetime` object (e.g., `datetime(2025,6,15,12,25,8)`).
-- **obs_len**: Observation duration in seconds (default 3600 s = 1 hour).
-- **traj_res**: Trajectory resolution in seconds (time step between predicted positions).
+- **tle_file**: Path to a TLE file, can be a single TLE plaintext file or a LEO TLE catalogue from Space-Track.
+- **target_date**: Observation date and time as a `datetime` object.
+- **obs_len**: Observation duration in seconds.
+- **traj_res**: Trajectory resolution in seconds ($\Delta \text{t}$ between positions).
 - **obs_lat, obs_lon**: Observer location in degrees (latitude, longitude).
 - **R**: Radial constraint in km (distance from observer to include satellites).
-- **horizon_data**: Optional CSV file or list defining the local horizon (azimuth vs elevation). Use `None` for automatic calculation.
-- **satcon**: Satellite constellation name as a string (e.g., `'OneWeb'`, `'STARLINK'`).
+- **horizon_data**: Optional CSV file or list defining the local horizon as azimuth-elevation pairs. Use `None` for default baseline flat horizon.
+- **satcon**: LEO satellite constellation name as string (e.g. `'OneWeb'`, `'STARLINK'`).
 
 
