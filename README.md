@@ -61,7 +61,7 @@ data = load_satellite_data(
 
 **User Inputs:**
 
-- `tle_file`: Path to a TLE file, can be a single TLE plaintext file (from [CelesTrak](https://celestrak.org/)) or a LEO TLE catalogue in a plaintext file (from [Space-Track](https://www.space-track.org)).
+- `tle_file`: Path to a TLE plaintext file, where a single TLE (from [CelesTrak](https://celestrak.org/)) or a LEO TLE catalogue (from [Space-Track](https://www.space-track.org)) are both supported formats.
 - `target_date`: Observation date and time as a `datetime` object.
 - `obs_len`: Observation duration in seconds.
 - `traj_res`: Trajectory resolution in seconds ($\Delta \text{t}$ between positions).
