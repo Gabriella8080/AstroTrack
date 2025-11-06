@@ -57,6 +57,7 @@ data = load_satellite_data(
     horizon_data=None,     # CSV file or None
     satcon="OneWeb"
 )
+```
 
 User Inputs
 -----------
