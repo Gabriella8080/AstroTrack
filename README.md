@@ -37,6 +37,7 @@ Quickstart
 ----------
 
 AstroTrack is structured into several modules, where `preprocess` must be run in order to initialise the satellite data to be used across the other modules complementarily. We provide a brief overview below of the key functions and example usage across all five functional modules, with some example variable labels to guide a user. 
+---
 
 **1. Preprocessing and Loading Satellite Data (`preprocess`)**
 
@@ -69,6 +70,7 @@ data = load_satellite_data(
 - `R`: Radial constraint in km (distance from observer to include satellites).
 - `horizon_data`: Optional CSV file or list defining the local horizon as azimuth-elevation pairs. Use `None` for default baseline flat horizon.
 - `satcon`: LEO satellite constellation name as string (e.g. `'OneWeb'`, `'STARLINK'`).
+---
 
 **2. Satellite Filtering & Properties (`satcon_properties`)**
 
