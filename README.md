@@ -36,12 +36,16 @@ Optional dependencies for development and testing:
 Quickstart
 ----------
 
-AstroTrack is structured into several modules, where `preprocess` must be run in order to initialise the satellite data to be used across the other modules complementarily. We provide a brief overview below of the key functions and example usage across all five functional modules, with some example variable labels to guide a user. 
+AstroTrack is organised into five core modules, where the workflow begins `preprocess` to initialise and structure the satellite data for analysis. The other subsequent modules build up on this to derive orbital properties, Doppler behaviour with respect to a ground-based experiment, animations, and enabling spectral associations.
+
+We provide a brief overview below of each module, their key functions and example usage. 
 
 
 **1. Preprocessing and Loading Satellite Data (`preprocess`)**
 
-`load_satellite_data()` is the primary function users call for obtaining candidate satellite flyovers subject to the user's analysis strategy. Other functions (e.g. `parse_tle_file`, `filter_tles_by_date`) are helper functions.
+This module handles the initial preparation of the satellite orbital data. It parses TLE catalogues from a plaintext document, applies filtering, and generates a structured dataset for later analysis. 
+
+`load_satellite_data()` is the primary function, returning preprocessed satellite data customised to your preferences and ready for use across all other modules.
 
 ```python
 from datetime import datetime
