@@ -36,7 +36,7 @@ Optional dependencies for development and testing:
 Quickstart
 ----------
 
-AstroTrack is structured into several modules, where `preprocess` must be run in order to initialise the satellite data to be used across the other modules complementarily. We provide a brief overview below of the key functions and example usage across all five functional modules.
+AstroTrack is structured into several modules, where `preprocess` must be run in order to initialise the satellite data to be used across the other modules complementarily. We provide a brief overview below of the key functions and example usage across all five functional modules, with some example variable labels to guide a user. 
 
 **1. Preprocessing and Loading Satellite Data (`preprocess`)**
 
@@ -83,6 +83,7 @@ This module is useful for creating subsets of satellite populations and analysin
 
 **Satellite Properties & Plots:**
 
+
 ```python
 from AstroTrack.satcon_properties import (
     plot_satellite_trajectory,
@@ -95,11 +96,11 @@ from AstroTrack.satcon_properties import (
 ```python
 plot_satellite_trajectory(
     satellite_data,
-    elev: float = 30,
-    azim: float = 45,
+    elev: float=30,
+    azim: float=45,
     time=None,
     ref_points=None,
-    show_legend: bool = True,
+    show_legend: bool=True,
     figsize=(8, 8),
     font_family="Times New Roman"
 )
@@ -107,8 +108,8 @@ plot_satellite_trajectory(
 plot_flyover_histogram_by_norad(
     satellite_data,
     cutoff_norad=None,
-    gap_hours: float = 1.0,
-    bin_width: int = 500,
+    gap_hours: float=1.0,
+    bin_width: int=500,
     color="lightpink",
     font_family="Times New Roman",
     figsize=(8, 8)
@@ -118,7 +119,7 @@ plot_satellite_metric(
     satellite_data,
     variable="Elevations",
     threshold=None,
-    invert=False,
+    invert: bool=False,
     font_family="Times New Roman",
     figsize=(8, 8)
 )
@@ -133,10 +134,28 @@ plot_max_elevation_histogram(
 ```
 
 **User Inputs**:
-- `satellite_data`: Output from `load_satellite_data()`
-- Optional plotting parameters: `elev`, `azim`, `time`, `ref_points`, `figsize`, `font_family`, `color`, `bin_width`, `show_legend`.
-- Satellite metric selection: `variable` (e.g. `"Elevations"`, `"Distances"`)
+- `satellite_data`: Output from `load_satellite_data()`.
+- `time`: List of Skyfield time objects to compute satellite positions at.
+- `ref_points`: Optional list of (label: str, latitude: float, longitude: flaot) reference locations.
+- `elev`, `azim`, `figsize`, `font_family`, `color`, `bin_width`, `show_legend`: Optional plotting parameters.
+- `variable`: Satellite metric selection (e.g. `"Elevations"`, `"Distances"`).
 - Other thresholds or filtering parameters where applicable.
+
+In order to initialise the epoch times, the following code can be used and manipulated as desired:
+
+```python
+import numpy as np
+from skyfield.api import load
+
+# Create a timescale object:
+ts = load.timescale()
+
+# Define orbit duration:
+orbit_duration = np.arange(0, 3600, 1)  # in seconds
+
+# Generate time array:
+epochs_of_orbit = ts.utc(2025, 1, 1, 10, 15, 0 + orbit_duration)
+```
 
 **3. Doppler Analysis (`doppler_analysis`)**
 
@@ -146,3 +165,111 @@ from AstroTrack.doppler_analysis import (
     check_doppler_resolution
 )
 ```
+
+```python
+plot_doppler_shifts(
+    satellite_data,
+    f0,
+    font_family="Times New Roman",
+    figsize=(8, 5),
+    marker_color="deeppink",
+    time_window=10
+)
+
+check_doppler_resolution(
+    all_satellite_data,
+    f0_array,
+    resolution=12_000,
+    experiment="REACH",
+    return_df: bool=False
+)
+```
+**User Inputs**:
+- `f0`, `f0_array`: Frequencies to compute satellite Doppler shifts in Hertz.
+- `resolution`: Frequency resolution of experiment in Hertz.
+- `time_window`: Half-width of visibility time over experiment in minutes.
+- `marker_color`: Optional plotting parameter.
+
+**4. Animations (`satcon_animate`)**
+
+```python
+from AstroTrack.satcon_animate import animate_trajectories
+```
+```python
+animate_trajectories(
+    satellite_data,
+    elev: float=30,
+    azim: float=300,
+    ref_points=None,
+    duration_hours: float=4,
+    step_seconds: int=60,
+    start_time=None,
+    output_dir=".",
+    filename_prefix="animated_satellites",
+    font_family="Times New Roman"
+)
+
+```
+
+**User Inputs**:
+- `duration_hours`: Duration of satellite propagation in animation in hours.
+- `step_seconds`: Time step between animation frames in seconds.
+- `start_time`: Datetime object defining start of animation.
+
+**5. Spectral Analysis against Satellite Flyovers (`psd_analysis`)**
+
+```python
+from AstroTrack.psd_analysis import (
+    load_hdf5,
+    plot_psd_with_satellite_metric,
+    plot_psd_satellite_time_series
+)
+
+```
+```python
+load_hdf5(
+    file_path: str,
+    spectra_key: str="antenna_spectra",
+    timestamps_key: str="antenna_timestamps"
+)
+
+plot_psd_with_satellite_metric(
+    spectra: np.ndarray,
+    utc_timestamps: list[str],
+    all_satellite_data: list[dict],
+    variable: str = "Elevations",
+    bandwidth: float = 200,
+    freq_low_mhz: float = 40,
+    freq_high_mhz: float = 170,
+    v_min: float = 1e14,
+    v_max: float = 8e16,
+    show_legend: bool = False,
+    threshold: float = None,
+    vertical_lines: list[str] = None,
+    cmap: str = "Magma"
+)
+
+plot_psd_satellite_time_series(
+    spectra: np.ndarray,
+    utc_timestamps: list[str],
+    all_sat_data: list[dict],
+    norad_list: list[str] = None,
+    satellite_variable: str = "Elevations",
+    R: float = 2000,
+    psd_freq_ranges: list[tuple] = None,
+    target_freqs_mhz: list[float] = None,
+    bandwidth: int = 200,
+    vmin: float = 1e14,
+    vmax: float = 8e16,
+    cmap: str = "magma",
+    line_colors: list[str] = None,
+    threshold: float = None,
+    vertical_lines: list[str] = None
+)
+
+```
+
+**User Inputs**:
+- `duration_hours`: Duration of satellite propagation in animation in hours.
+- `step_seconds`: Time step between animation frames in seconds.
+- `start_time`: Datetime object defining start of animation.
