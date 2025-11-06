@@ -57,7 +57,7 @@ def plot_doppler_shifts(
         )
         plt.xlabel("Visibility Time (min)")
         plt.ylabel("Doppler Shift (kHz)")
-        plt.title(f"Satellite {norad_id} Doppler Shift (Centered at {print_time})")
+        plt.title(f"NORAD {norad_id} Doppler Shift (Centered at {print_time}):")
         plt.axhline(0, color="black", linestyle="--")
         plt.xlim(-time_window, time_window)
         plt.legend(loc="upper right", fontsize=10)

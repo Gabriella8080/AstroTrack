@@ -2,7 +2,8 @@
 from datetime import datetime
 from AstroTrack.preprocess import load_satellite_data
 from AstroTrack.satcon_properties import filter_by_norads
-from AstroTrack.doppler_analysis import check_doppler_resolution
+from AstroTrack.doppler_analysis import check_doppler_resolution, plot_doppler_shifts
+import matplotlib.pyplot as plt
 
 data = load_satellite_data(
     tle_file="LEO_TLE_file_14_06_2025_time_17_10.txt",
@@ -16,6 +17,8 @@ data = load_satellite_data(
     satcon="OneWeb"
 )
 
-subset = filter_by_norads(data, exact_id=63115)
-check_doppler_resolution(subset, f0_array=[110e6, 137.5e6])
+subset = filter_by_norads(data, exact_id=56713)
+f0_array=[110e6, 137.5e6]
+check_doppler_resolution(subset, f0_array)
+plot_doppler_shifts(data,f0_array[0])
 
