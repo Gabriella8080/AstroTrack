@@ -78,7 +78,7 @@ data = load_satellite_data(
 
 **2. Satellite Filtering & Properties (`satcon_properties`)**
 
-This module is useful for creating subsets of satellite populations and analysing their trajectory properties collectively as well as individually. 
+This module enables the selection and visualiation of satellite datasets. Users can generate subsets of satellite populations in order to explore their collective metrics, analysing their individual trajectory properties, and visualise their orbital paths. 
 
 **Flyover Selection:**
 - `get_norads(all_sat_data)`: Returns list of satellite NORAD IDs from the loaded dataset.
