@@ -166,6 +166,7 @@ epochs_of_orbit = ts.utc(2025, 1, 1, 10, 15, 0 + orbit_duration)
 ---
 
 **3. Doppler Analysis (`doppler_analysis`)**
+
 This module computes and plots the Doppler shifts of satellites at given emission frequencies provided by the user, with respect to their observational ground-site. This assesses the detectability limits of a satellite's potential IEMR/UEMR, and visualises the evolution of flyovers.
 
 ```python
@@ -203,6 +204,7 @@ check_doppler_resolution(
 ---
 
 **4. Trajectory Animations (`satcon_animate`)**
+
 This module creates three-dimensional animations of satellite flyovers projected on an Earth model, visualising it's orbital evolution with optional reference markers for ground-based locations of interest.
 
 ```python
@@ -231,6 +233,7 @@ animate_trajectories(
 ---
 
 **5. Spectral Analysis with Satellite Metrics (`psd_analysis`)**
+
 This module allows for the cross-correlation of radio spectra with satellite positions and other metrics, allowing for temporal relationships between RFI and the occurence of a satellite flyover.
 
 ```python
