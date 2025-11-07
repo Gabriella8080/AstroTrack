@@ -45,7 +45,7 @@ We provide a brief overview below of each module, their key functions and exampl
 
 This module handles the initial preparation of the satellite orbital data. It parses TLE catalogues from a plaintext document, applies filtering, and generates a structured dataset for later analysis. 
 
-`load_satellite_data()` is the primary function, returning preprocessed satellite data customised to your preferences and ready for use across all other modules.
+`load_satellite_data()` is the primary function, returning preprocessed satellite data customised to a user's preferences and ready for use across all other modules.
 
 ```python
 from datetime import datetime
@@ -97,6 +97,8 @@ from AstroTrack.satcon_properties import (
     plot_max_elevation_histogram
 )
 ```
+
+Function Signatures:
 
 ```python
 plot_satellite_trajectory(
@@ -164,6 +166,7 @@ epochs_of_orbit = ts.utc(2025, 1, 1, 10, 15, 0 + orbit_duration)
 ---
 
 **3. Doppler Analysis (`doppler_analysis`)**
+This module computes and plots the Doppler shifts of satellites at given emission frequencies provided by the user, with respect to their observational ground-site. This assesses the detectability limits of a satellite's potential IEMR/UEMR, and visualises the evolution of flyovers.
 
 ```python
 from AstroTrack.doppler_analysis import (
@@ -171,6 +174,8 @@ from AstroTrack.doppler_analysis import (
     check_doppler_resolution
 )
 ```
+
+Function Signatures:
 
 ```python
 plot_doppler_shifts(
@@ -198,6 +203,7 @@ check_doppler_resolution(
 ---
 
 **4. Trajectory Animations (`satcon_animate`)**
+This module creates three-dimensional animations of satellite flyovers projected on an Earth model, visualising it's orbital evolution with optional reference markers for ground-based locations of interest.
 
 ```python
 from AstroTrack.satcon_animate import animate_trajectories
@@ -225,6 +231,7 @@ animate_trajectories(
 ---
 
 **5. Spectral Analysis with Satellite Metrics (`psd_analysis`)**
+This module allows for the cross-correlation of radio spectra with satellite positions and other metrics, allowing for temporal relationships between RFI and the occurence of a satellite flyover.
 
 ```python
 from AstroTrack.psd_analysis import (
@@ -234,6 +241,9 @@ from AstroTrack.psd_analysis import (
 )
 
 ```
+
+Function Signatures:
+
 ```python
 load_hdf5(
     file_path: str,
@@ -280,9 +290,9 @@ plot_psd_satellite_time_series(
 **User Inputs**:
 - `spectra`: Two-dimensional Power Spectral Density (PSD) array, with time x frequency.
 - `timestamps`: UTC Timestamp strings per time bin.
-- `bandwidth`: Experiment bandwidth in MegaHertz.
-- `freq_low_mhz`, `freq_high_mhz`: Chosen upper and lower frequency bounds for analysis in MegaHertz.
-- `psd_freq_ranges`: List of frequency ranges for multi-panel analysis such that [(low1, high1), (low2, high2), ...] in MegaHertz.
+- `bandwidth`: Experiment bandwidth in MHz.
+- `freq_low_mhz`, `freq_high_mhz`: Chosen upper and lower frequency bounds for analysis in MHz.
+- `psd_freq_ranges`: List of frequency ranges for multi-panel analysis such that [(low1, high1), (low2, high2), ...] in MHz.
 - `norad_list`: List of NORAD ID's to only select specific satellites for plotting their metric.
 - `threshold`: Variable threshold to hide satellite metrics beyond.
 - `vmin`, `vmax`, `cmap`: Optional plotting parameters.
