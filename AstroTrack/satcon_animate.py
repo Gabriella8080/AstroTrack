@@ -1,5 +1,6 @@
 from skyfield.api import EarthSatellite, load
-from matplotlib.animation import FuncAnimation
+from matplotlib.animation import FuncAnimation, PillowWriter
+from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
@@ -14,7 +15,7 @@ def lat_lon_to_xyz(re, lat, lon):
     return x, y, z
 
 
-def timestamps(ts_array):
+def format_timestamps(ts_array):
     """Convert Skyfield times to UTC string list."""
     return [t.utc_strftime("%Y-%m-%d %H:%M:%S") for t in ts_array]
 
@@ -61,34 +62,36 @@ def animate_trajectories(
     theta = np.linspace(0, 2 * np.pi, 201)
     cth, sth, zth = np.cos(theta), np.sin(theta), np.zeros_like(theta)
     lon_lines, lat_lines = [], []
-
+    lon0 = re*np.vstack((cth, zth, sth))
     for phi in np.radians(np.arange(0, 180, 15)):
         cph, sph = np.cos(phi), np.sin(phi)
-        lon_lines.append(
-            (re * cth * cph, re * sth * cph, re * sph * np.ones_like(theta))
-        )
+        cph, sph = [f(phi) for f in [np.cos, np.sin]]
+        lon = np.vstack((lon0[0]*cph - lon0[1]*sph,
+                         lon0[1]*cph + lon0[0]*sph,
+                         lon0[2]) )
+        lon_lines.append(lon)
 
     for phi in np.radians(np.arange(-75, 90, 15)):
-        cph, sph = np.cos(phi), np.sin(phi)
-        lat_lines.append(
-            (
-                re * np.cos(theta) * cph,
-                re * np.sin(theta) * cph,
-                re * np.ones_like(theta) * sph,
-            )
-        )
+        cph, sph = [f(phi) for f in [np.cos, np.sin]]
+        lat = re*np.vstack((cth*cph, sth*cph, zth+sph))
+        lat_lines.append(lat)
 
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111, projection="3d")
     for x, y, z in lon_lines + lat_lines:
         ax.plot(x, y, z, "-k", lw=0.5, alpha=0.4)
 
+    ref_handles = []
+
     if ref_points:
         for label, lat, lon in ref_points:
             x, y, z = lat_lon_to_xyz(re, lat, lon)
-            ax.scatter(x, y, z, s=80, alpha=0.7, label=label)
+            h = ax.scatter(x, y, z, s=80, alpha=0.7, label=label)
+            ref_handles.append(h)
+
 
     plots, trajectories = [], []
+    sat_handles = []
     if start_time is not None:
         if isinstance(start_time, datetime):
             start_dt = start_time
@@ -117,25 +120,50 @@ def animate_trajectories(
         )
         plots.append(scatter)
         trajectories.append(pos)
+        sat_handles.append(scatter)
 
-    timestamps = timestamps(time_of_orbit)
+    timestamps = format_timestamps(time_of_orbit)
     timestamp_text = ax.text2D(0.05, 0.95, "", transform=ax.transAxes, fontsize=12)
 
     ax.view_init(elev, azim)
-    ax.set_title(f"Satellite Animation (elev={elev}°, azim={azim}°)")
-    ax.legend(loc="upper right")
+    ax.set_title(f"Trajectory Animation:\n(elev={elev}°, azim={azim}°)")
+    ax.set_xlabel("x (km)")
+    ax.set_ylabel("y (km)")
+    ax.set_zlabel("z (km)")
 
+    max_items = 10
+    legend_handles = []
+    legend_labels = []
+    for h in ref_handles:
+        legend_handles.append(h)
+        legend_labels.append(h.get_label())
+    for h in sat_handles[:max_items]:
+        legend_handles.append(h)
+        legend_labels.append(h.get_label())
+    ax.legend(
+        legend_handles,
+        legend_labels,
+        loc="best",
+        fontsize="small",
+        ncol=2,
+    )
     ani = FuncAnimation(
         fig,
         update_frame,
         frames=len(timestamps),
-        fargs=(trajectories, plots, timestamps, ax, timestamp_text),
+        fargs=(trajectories, plots, timestamps, timestamp_text),
         interval=100,
         blit=False,
     )
 
     os.makedirs(output_dir, exist_ok=True)
     filepath = os.path.join(output_dir, f"{filename_prefix}_e{elev}_a{azim}.gif")
-    ani.save(filepath, dpi=80)
+    writer = PillowWriter(fps=10)
+    with tqdm(total=len(timestamps), desc="Rendering animation", unit="frame") as pbar:
+        with writer.saving(fig, filepath, dpi=80):
+            for i in range(len(timestamps)):
+                update_frame(i, trajectories, plots, timestamps, timestamp_text)
+                writer.grab_frame()
+                pbar.update(1)
     plt.close()
     print(f"Animation saved: {filepath}")

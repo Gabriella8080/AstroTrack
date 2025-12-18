@@ -143,7 +143,7 @@ plot_max_elevation_histogram(
 **User Inputs**:
 - `satellite_data`: Output from `load_satellite_data()`.
 - `time`: List of Skyfield time objects to compute satellite positions at.
-- `ref_points`: Optional list of (label: str, latitude: float, longitude: flaot) reference locations.
+- `ref_points`: Optional list of [label: str, latitude: float, longitude: float] reference locations (e.g. `["London", 51.5, 0.128]`).
 - `elev`, `azim`, `figsize`, `font_family`, `color`, `bin_width`, `show_legend`: Optional plotting parameters.
 - `variable`: Satellite metric selection (e.g. `"Elevations"`, `"Distances"`).
 - Other thresholds or filtering parameters where applicable.

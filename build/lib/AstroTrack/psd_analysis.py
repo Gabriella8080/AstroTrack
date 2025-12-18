@@ -222,7 +222,7 @@ def plot_psd_with_satellite_metric(
         fontsize=16,
     )
     plt.tight_layout(rect=[0, 0, 0.9, 0.95])
-    plt.show()
+    plt.show(block=True)
 
     print(f"Plotted NORADs: {norads} | Count: {len(norads)}")
 
@@ -422,4 +422,4 @@ def plot_psd_satellite_time_series(
 
     fig.suptitle(f"PSD and Satellite {satellite_variable}", fontsize=15)
     plt.tight_layout(rect=[0, 0, 0.9, 0.96])
-    plt.show()
+    plt.show(block=True)

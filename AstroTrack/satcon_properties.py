@@ -77,7 +77,7 @@ def plot_satellite_trajectory(
     azim: float = 45,
     time=None,
     ref_points=None,
-    show_legend: bool = True,
+    show_legend=True,
     figsize=(8, 8),
     font_family="Times New Roman",
 ):
@@ -113,12 +113,8 @@ def plot_satellite_trajectory(
             z = re * (np.zeros_like(theta) + sph)
             ax.plot(x, y, z, "k-", lw=0.5, alpha=0.4)
 
-        num_sats = len(all_satellite_data)
-        cmap = cm.get_cmap("tab20", num_sats)
         ts = load.timescale()
-
         for i, sat_data in enumerate(all_satellite_data):
-            color = cmap(i)
             L1, L2 = sat_data["TLE"]
             sat = EarthSatellite(L1, L2, ts=ts)
             x, y, z = [], [], []
@@ -127,7 +123,9 @@ def plot_satellite_trajectory(
                 x.append(pos[0])
                 y.append(pos[1])
                 z.append(pos[2])
-            ax.plot(x, y, z, color=color, lw=1, alpha=0.8)
+
+            norad = L2.split()[1]
+            ax.plot(x, y, z, lw=1, alpha=0.8, label=f"{norad}")
 
         if ref_points:
             for label, lat, lon in ref_points:
@@ -136,16 +134,35 @@ def plot_satellite_trajectory(
                     loc.x.value, loc.y.value, loc.z.value, s=100, alpha=0.6, label=label
                 )
 
+        if show_legend:
+            max_items = 10
+            handles, labels = ax.get_legend_handles_labels()
+            ref_handles = []
+            ref_labels = []
+            sat_handles = []
+            sat_labels = []
+            for h, l in zip(handles, labels):
+                if "sat" in l.lower() or l.isdigit():
+                    sat_handles.append(h)
+                    sat_labels.append(l)
+                else:
+                    ref_handles.append(h)
+                    ref_labels.append(l)
+            remaining = max_items - len(ref_handles)
+            final_handles = ref_handles + sat_handles[:remaining]
+            final_labels = ref_labels + sat_labels[:remaining]
+            if final_handles:
+                ax.legend(final_handles, final_labels, loc="best", fontsize="small")
+
         ax.set_xlabel("x (km)")
         ax.set_ylabel("y (km)")
         ax.set_zlabel("z (km)")
         ax.view_init(elev, azim)
         ax.set_title(
-            f"Satellite Trajectories (elev={elev}$\degree$, azim={azim}$\degree$)"
+            f"Satellite Trajectories:\n(elev={elev}$\degree$, azim={azim}$\degree$)"
         )
-        if show_legend and num_sats <= 15:
-            ax.legend()
-        plt.show()
+
+        plt.show(block=True)
 
 
 def plot_flyover_histogram_by_norad(
@@ -205,13 +222,13 @@ def plot_flyover_histogram_by_norad(
                 lw=2,
                 label=f"NORAD {cutoff_norad}",
             )
+            plt.legend()
         plt.xlabel("NORAD ID")
         plt.ylabel("Total Passes")
         plt.title("Distribution of Satellite Flyovers by NORAD ID")
         plt.grid(axis="y", alpha=0.3)
-        plt.legend()
         plt.tight_layout()
-        plt.show()
+        plt.show(block=True)
 
         return passes_per_norad
 
@@ -264,10 +281,21 @@ def plot_satellite_metric(
 
             plt.scatter(epochs_np, arr, s=10, color=color, label=f"{norad}")
 
+        handles, labels = plt.gca().get_legend_handles_labels()
+        max_items = 10
+        if handles:
+            plt.legend(
+                handles[:max_items],
+                labels[:max_items],
+                loc="best",
+                ncol=2,
+                fontsize="small",
+                title=f"NORADS ({min(len(labels), max_items)}/{len(labels)})"
+            )
+
         plt.xlabel("Timestamp (UTC)")
         plt.ylabel(variable)
         plt.title(f"{variable} vs Time for Selected Satellites")
-        plt.legend(loc="upper left", ncol=2, fontsize="small")
         plt.grid(alpha=0.3)
 
         ax = plt.gca()
@@ -335,4 +363,4 @@ def plot_max_elevation_histogram(
         )
         plt.grid(axis="y", linestyle="--", alpha=0.7)
         plt.tight_layout()
-        plt.show()
+        plt.show(block=True)
