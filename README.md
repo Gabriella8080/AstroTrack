@@ -304,28 +304,4 @@ plot_psd_satellite_time_series(
 
 Example Workflow:
 ----------
-Please refer to `test.py` in the `test` directory for a more comprehensive workflow with **AstroTrack**, including an example horizon profile and TLE catalogue.
-```python
-from datetime import datetime
-from AstroTrack.preprocess import load_satellite_data
-from AstroTrack.satcon_properties import filter_by_norads
-from AstroTrack.doppler_analysis import check_doppler_resolution
-
-# Load satellite data:
-data = load_satellite_data(
-    tle_file="LEO_TLE_file.txt",
-    target_date=datetime(2025,6,15,12,25,8),
-    obs_len=3600,
-    traj_res=60,
-    obs_lat=51.5,
-    obs_lon=-0.1,
-    R=2000,
-    satcon="OneWeb"
-)
-
-# Filter for a specific satellite:
-subset = filter_by_norads(data, exact_id=63115)
-
-# Check Doppler resolution:
-check_doppler_resolution(subset, f0_array=[110e6, 137.5e6])
-```
+Please refer to `test.py` in the `tess` directory for a more comprehensive workflow with **AstroTrack**, including an example horizon profile and TLE catalogue.
