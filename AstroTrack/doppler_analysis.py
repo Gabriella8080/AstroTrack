@@ -101,9 +101,9 @@ def check_doppler_resolution(
             max_doppler_khz = np.max(np.abs((velocity_r / c) * f0)) / 1e3
             row[
                 f"{f0/1e6:.1f} MHz"
-            ] = f"{max_doppler_khz:.2f} kHz | {
+            ] = f"""{max_doppler_khz:.2f} kHz | {
                 'YES' if max_doppler_khz > resolution/1e3 else 'NO'
-                }"
+                }"""
         row[f"Freq. to Resolve ({experiment})"] = f"{f_max_needed:.0f} MHz"
         rows.append(row)
 

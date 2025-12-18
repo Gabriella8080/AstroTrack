@@ -3,12 +3,13 @@ from skyfield.api import EarthSatellite, load
 from skyfield.timelib import Time
 
 # Astropy
-from astropy.coordinates import EarthLocation, AltAz, CartesianRepresentation, ITRS
-from astropy.time import Time
+from astropy.coordinates import EarthLocation, AltAz
+from astropy.coordinates import CartesianRepresentation, ITRS
+from astropy.time import Time  # noqa: F811
 from astropy import units as u
 
 # Numerical
-from datetime import datetime, timedelta
+from datetime import timedelta
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
@@ -80,7 +81,8 @@ def filter_tles_by_date(satcon_tles, target_date):
 
 
 def compute_sat_properties(sat, location, epoch):
-    """Calculates properties of satellite trajectory relative to observer at epoch.
+    """Calculates properties of satellite trajectory
+    relative to observer at epoch.
 
     Parameters:
          sat (EarthSatellite): Skyfield satellite object
@@ -95,7 +97,9 @@ def compute_sat_properties(sat, location, epoch):
     sat_xyz = sat_at_epoch.position.km
     astropy_time = Time(epoch.utc_iso())
 
-    observer_xyz = np.array([location.x.value, location.y.value, location.z.value])
+    observer_xyz = np.array(
+        [location.x.value, location.y.value, location.z.value]
+        )
     displacement = np.array(sat_xyz) - observer_xyz
     distance = np.linalg.norm(displacement)
     unit_displacement = displacement / distance
@@ -103,7 +107,9 @@ def compute_sat_properties(sat, location, epoch):
     los_velocity = -np.dot(relative_velocity, unit_displacement)
 
     altaz_frame = AltAz(obstime=astropy_time, location=location)
-    sat_itrs = ITRS(CartesianRepresentation(sat_xyz * u.km), obstime=astropy_time)
+    sat_itrs = ITRS(
+        CartesianRepresentation(sat_xyz * u.km), obstime=astropy_time
+        )
     sat_altaz = sat_itrs.transform_to(altaz_frame)
     azimuth = sat_altaz.az.value
     elevation = sat_altaz.alt.value
@@ -152,7 +158,8 @@ def find_target_sats(
     obs_height=0,
     start_index=0,
 ):
-    """Compute satellites visible above horizon within radial constraint at given epochs.
+    """Compute satellites visible above horizon
+    within radial constraint at given epochs.
 
     Parameters:
          filtered_tles (list[tuple]): Filtered TLEs
@@ -166,10 +173,13 @@ def find_target_sats(
          start_index (int): Starting index of satellite numbering
 
     Output:
-         list [dict]: Satellite dictionary with TLEs and flyover trajectory properties
+         list [dict]: Satellite dictionary with TLEs and
+         flyover trajectory properties
     """
     sat_data_list = []
-    obs_loc = EarthLocation.from_geodetic(obs_lon, obs_lat, height=obs_height * u.m)
+    obs_loc = EarthLocation.from_geodetic(
+        obs_lon, obs_lat, height=obs_height * u.m
+        )
     obs_location = obs_loc.to("km")
 
     for index, tle in enumerate(
