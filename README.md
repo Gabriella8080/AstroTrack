@@ -304,7 +304,7 @@ plot_psd_satellite_time_series(
 
 Example Workflow:
 ----------
-Please refer to the `tests` directory for a more comprehensive workflow with **AstroTrack**, including an example horizon profile and TLE catalogue.
+Please refer to `test.py` in the `test` directory for a more comprehensive workflow with **AstroTrack**, including an example horizon profile and TLE catalogue.
 ```python
 from datetime import datetime
 from AstroTrack.preprocess import load_satellite_data
