@@ -24,7 +24,7 @@ epochs_of_orbit = ts.utc(2025, 6, 15, 12, 25, 8 + orbit_duration)
 ref_locations = [["London",51.5,0.128], ["REACH",-30.7,-21.5]]
 
 data = load_satellite_data(
-    tle_file="LEO_TLE_file_14_06_2025_time_17_10.txt",
+    tle_file="LEO-catalogue.txt",
     target_date=datetime(2025, 6, 15, 12, 25, 8),
     obs_len=length,
     traj_res=60,

@@ -8,7 +8,7 @@ AstroTrack
 Installation
 ------------
 
-You can install AstroTrack directly from PyPI:
+You can install **AstroTrack** directly from PyPI:
 
 .. code-block:: bash
 
@@ -36,7 +36,7 @@ Optional dependencies for development and testing:
 Quickstart
 ----------
 
-AstroTrack is organised into five core modules, where the workflow begins `preprocess` to initialise and structure the satellite data for analysis. The other subsequent modules build up on this to derive orbital properties, Doppler behaviour with respect to a ground-based experiment, animations, and enabling spectral associations.
+**AstroTrack** is organised into five core modules, where the workflow begins `preprocess` to initialise and structure the satellite data for analysis. The other subsequent modules build up on this to derive orbital properties, Doppler behaviour with respect to a ground-based experiment, animations, and enabling spectral associations.
 
 We provide a brief overview below of each module, their key functions and example usage. 
 
@@ -304,6 +304,7 @@ plot_psd_satellite_time_series(
 
 Example Workflow:
 ----------
+Please refer to the `tests` directory for a more comprehensive workflow with **AstroTrack**, including an example horizon profile and TLE catalogue.
 ```python
 from datetime import datetime
 from AstroTrack.preprocess import load_satellite_data
