@@ -80,14 +80,14 @@ data = load_satellite_data(
 
 This module enables the selection and visualiation of satellite datasets. Users can generate subsets of satellite populations in order to explore their collective metrics, analysing their individual trajectory properties, and visualise their orbital paths. 
 
-**Flyover Selection:**
+**(i) Flyover Selection:**
 - `get_norads(all_sat_data)`: Returns list of satellite NORAD IDs from the loaded dataset.
 - `filter_by_norads(all_sat_data, exact_id=None, subset=None)`: Select satellites by NORAD IDs.
 - `filter_by_time(all_sat_data, start_time, end_time)`: Select satellites visible in a time range (parameters are `datetime` objects).
 - `filter_nth(all_sat_data, n=1)`: Keep every nth satellite from the dataset.
 - `filter_custom(all_sat_data, custom_fn)`: Filter using a custom user-defined function.
 
-**Satellite Properties & Plots:**
+**(ii) Satellite Properties & Plots:**
 
 ```python
 from AstroTrack.satcon_properties import (
@@ -304,4 +304,4 @@ plot_psd_satellite_time_series(
 
 Example Workflow:
 ----------
-Please refer to `test.py` in the `tests` directory for a more comprehensive workflow with **AstroTrack**, including an example horizon profile and TLE catalogue.
+Please refer to `test.py` in the `tests` directory for a more comprehensive workflow with **AstroTrack**, including usage of an example horizon profile and TLE catalogue.
