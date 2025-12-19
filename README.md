@@ -43,6 +43,7 @@ Quickstart
 </div>
 <br>
 We provide a brief overview below of each module, their key functions and example usage. 
+----------
 
 **1. Preprocessing and Loading Satellite Data (`preprocess`)**
 
