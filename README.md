@@ -72,7 +72,7 @@ data = load_satellite_data(
 - `traj_res`: Trajectory resolution in seconds ($\Delta \text{t}$ between positions).
 - `obs_lat, obs_lon`: Observer location in degrees (latitude, longitude).
 - `R`: Radial constraint in km (distance from observer to include satellites).
-- `horizon_data`: Optional CSV file or list defining the local horizon as azimuth-elevation pairs. Use `None` for default baseline flat horizon.
+- `horizon_data`: Optional CSV file or list defining the local horizon as azimuth-elevation pairs. Use `baseline_horizon.csv` for default baseline flat horizon.
 - `satcon`: LEO satellite constellation name as string (e.g. `'OneWeb'`, `'STARLINK'`).
 ---
 
