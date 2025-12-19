@@ -37,15 +37,12 @@ Quickstart
 ----------
 
 **AstroTrack** is organised into five core modules, where the workflow begins `preprocess` to initialise and structure the satellite data for analysis. The other subsequent modules build up on this to derive orbital properties, Doppler behaviour with respect to a ground-based experiment, animations, and enabling spectral associations.
-
-<br>
 <br>
 <div align="center">
   <img src="package-modules.png" width="600">
 </div>
-
+<br>
 We provide a brief overview below of each module, their key functions and example usage. 
-
 
 **1. Preprocessing and Loading Satellite Data (`preprocess`)**
 
