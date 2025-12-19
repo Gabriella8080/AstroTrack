@@ -42,7 +42,8 @@ Quickstart
   <img src="package-modules.png" width="600">
 </div>
 <br>
-We provide a brief overview below of each module, their key functions and example usage. 
+We provide a brief overview below of each module, their key functions and example usage.
+ 
 ---
 
 **1. Preprocessing and Loading Satellite Data (`preprocess`)**
