@@ -8,10 +8,10 @@ AstroTrack
 Installation
 ------------
 
-You can install **AstroTrack** directly from PyPI:
+With the publishing of our package on PyPI under way, you can install **AstroTrack** via:
 
-```bash
-    pip install AstroTrack
+```python
+    pip install e .
 ```
 
 Dependencies (`pip` will be installed automatically if missing):
