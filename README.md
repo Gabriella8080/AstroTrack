@@ -3,6 +3,12 @@ AstroTrack
 
 **AstroTrack** is a Python package for characterising Low Earth Orbit (LEO) satellite interference in wide-field radio astronomy observations. It provides tools for processing TLEs, selecting flyovers, analysing satellite properties, computing Doppler shifts, generating Power Spectral Density (PSD) plots, and creating animations of satellite trajectories.
 
+<br>
+<div align="center">
+  <img src="tests/animated_satellites_e30_a300.gif" width="600">
+</div>
+<br>
+
 ---
 
 Installation
