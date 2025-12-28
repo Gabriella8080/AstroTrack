@@ -5,7 +5,7 @@ AstroTrack
 
 <br>
 <div align="center">
-  <img src="tests/animated_satellites_e30_a300.gif" width="600">
+  <img src="tests/animated_satellites_e30_a300.gif" width="400">
 </div>
 <br>
 
