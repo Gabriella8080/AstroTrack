@@ -24,7 +24,6 @@ data = load_satellite_data(
 )
 ```
 
-**User Inputs:**
 
 | Parameter | Description |
 |----------|-------------|
@@ -102,13 +101,14 @@ plot_max_elevation_histogram(
 )
 ```
 
-**User Inputs**:
-- `satellite_data`: Output from `load_satellite_data()`.
-- `time`: List of Skyfield time objects to compute satellite positions at.
-- `ref_points`: Optional list of [label: str, latitude: float, longitude: float] reference locations (e.g. `["London", 51.5, 0.128]`).
-- `elev`, `azim`, `figsize`, `font_family`, `color`, `bin_width`, `show_legend`: Optional plotting parameters.
-- `variable`: Satellite metric selection (e.g. `"Elevations"`, `"Distances"`).
-- Other thresholds or filtering parameters where applicable.
+| Parameter | Description |
+|----------|-------------|
+|`satellite_data` | Output from `load_satellite_data()`. |
+|`time` | List of Skyfield time objects to compute satellite positions at. |
+|`ref_points` | Optional list of [label: str, latitude: float, longitude: float] reference locations (e.g. `["London", 51.5, 0.128]`). |
+|`elev`, `azim`, `figsize`, `font_family`, `color`, `bin_width`, `show_legend` | Optional plotting parameters. |
+|`variable` | Satellite metric selection (e.g. `"Elevations"`, `"Distances"`). |
+Other thresholds or filtering parameters are also present where applicable.
 
 ---
 
@@ -143,11 +143,13 @@ check_doppler_resolution(
     return_df: bool=False
 )
 ```
-**User Inputs**:
-- `f0`, `f0_array`: Frequencies to compute satellite Doppler shifts in Hertz.
-- `resolution`: Frequency resolution of experiment in Hertz.
-- `time_window`: Half-width of visibility time over experiment in minutes.
-- `marker_color`: Optional plotting parameter.
+
+| Parameter | Description |
+|----------|-------------|
+|`f0`, `f0_array` | Frequencies to compute satellite Doppler shifts in Hertz. |
+|`resolution` | Frequency resolution of experiment in Hertz. |
+|`time_window` | Half-width of visibility time over experiment in minutes. |
+|`marker_color` | Optional plotting parameter. |
 ---
 
 **4. Trajectory Animations (`satcon_animate`)**
@@ -173,10 +175,11 @@ animate_trajectories(
 
 ```
 
-**User Inputs**:
-- `duration_hours`: Duration of satellite propagation in animation in hours.
-- `step_seconds`: Time step between animation frames in seconds.
-- `start_time`: Datetime object defining start of animation.
+| Parameter | Description |
+|----------|-------------|
+|`duration_hours` | Duration of satellite propagation in animation in hours. |
+|`step_seconds` | Time step between animation frames in seconds. |
+|`start_time` | Datetime object defining start of animation. |
 ---
 
 **5. Spectral Analysis with Satellite Metrics (`psd_analysis`)**
@@ -237,12 +240,13 @@ plot_psd_satellite_time_series(
 
 ```
 
-**User Inputs**:
-- `spectra`: Two-dimensional Power Spectral Density (PSD) array, with time x frequency.
-- `timestamps`: UTC Timestamp strings per time bin.
-- `bandwidth`: Experiment bandwidth in MHz.
-- `freq_low_mhz`, `freq_high_mhz`: Chosen upper and lower frequency bounds for analysis in MHz.
-- `psd_freq_ranges`: List of frequency ranges for multi-panel analysis such that [(low1, high1), (low2, high2), ...] in MHz.
-- `norad_list`: List of NORAD ID's to only select specific satellites for plotting their metric.
-- `threshold`: Variable threshold to hide satellite metrics beyond.
-- `vmin`, `vmax`, `cmap`: Optional plotting parameters.
+| Parameter | Description |
+|----------|-------------|
+|`spectra` | Two-dimensional Power Spectral Density (PSD) array, with time x frequency. |
+|`timestamps` | UTC Timestamp strings per time bin.
+|`bandwidth`: Experiment bandwidth in MHz. |
+|`freq_low_mhz`, `freq_high_mhz` | Chosen upper and lower frequency bounds for analysis in MHz. |
+|`psd_freq_ranges` | List of frequency ranges for multi-panel analysis such that [(low1, high1), (low2, high2), ...] in MHz. |
+|`norad_list` | List of NORAD ID's to only select specific satellites for plotting their metric. |
+|`threshold` | Variable threshold to hide satellite metrics beyond. |
+|`vmin`, `vmax`, `cmap` | Optional plotting parameters. |
