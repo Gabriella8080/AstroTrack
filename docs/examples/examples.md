@@ -9,7 +9,7 @@ This module handles the initial preparation of the satellite orbital data. It pa
 
 ```python
 from datetime import datetime
-from AstroTrack.preprocess import load_satellite_data
+from astrotrack.preprocess import load_satellite_data
 
 data = load_satellite_data(
     tle_file="LEO_TLE_file.txt",
@@ -50,7 +50,7 @@ This module enables the selection and visualiation of satellite datasets. Users 
 **(ii) Satellite Properties & Plots:**
 
 ```python
-from AstroTrack.satcon_properties import (
+from astrotrack.satcon_properties import (
     plot_satellite_trajectory,
     plot_flyover_histogram_by_norad,
     plot_satellite_metric,
@@ -115,7 +115,7 @@ plot_max_elevation_histogram(
 This module computes and plots the Doppler shifts of satellites at given emission frequencies provided by the user, with respect to their observational ground-site. This assesses the detectability limits of a satellite's potential IEMR/UEMR, and visualises the evolution of flyovers.
 
 ```python
-from AstroTrack.doppler_analysis import (
+from astrotrack.doppler_analysis import (
     plot_doppler_shifts, 
     check_doppler_resolution
 )
@@ -153,7 +153,7 @@ check_doppler_resolution(
 This module creates three-dimensional animations of satellite flyovers projected on an Earth model, visualising it's orbital evolution with optional reference markers for ground-based locations of interest.
 
 ```python
-from AstroTrack.satcon_animate import animate_trajectories
+from astrotrack.satcon_animate import animate_trajectories
 ```
 ```python
 animate_trajectories(
@@ -182,7 +182,7 @@ animate_trajectories(
 This module allows for the cross-correlation of radio spectra with satellite positions and other metrics, allowing for temporal relationships between RFI and the occurence of a satellite flyover.
 
 ```python
-from AstroTrack.psd_analysis import (
+from astrotrack.psd_analysis import (
     load_hdf5,
     plot_psd_with_satellite_metric,
     plot_psd_satellite_time_series

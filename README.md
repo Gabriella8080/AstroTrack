@@ -28,10 +28,10 @@ To alternatively install from source:
 ```
 ---
 
-Quickstart
+Modules Overview
 ----------
 
-**AstroTrack** is organised into five core modules, where the package begins with `preprocess` to initialise and structure the satellite data for analysis. The other subsequent modules build up on this to derive orbital properties, Doppler behaviour with respect to a ground-based experiment, animations, and enabling spectral associations.
+**AstroTrack** is organised into five core modules, where the package begins with initialising and structuring satellite Two-Line Element (TLE) data for analysis. The other subsequent modules build up on this to derive orbital properties, Doppler behaviour with respect to a ground-based experiment, animations, and enabling spectral associations.
 <br>
 <div align="center">
   <img src="docs/images/package-modules.png" width="600">
@@ -44,7 +44,29 @@ Quickstart
 - **`satcon_animate`** — Generate 3D trajectory animations.
 - **`psd_analysis`** — Visualise satellite flyovers with spectral data.
 
-We provide a brief overview of all five modules, their key functions, and usage in our [examples](docs/examples/examples.md).
+We provide a brief overview of all five modules, their key functions, and example usage [here](docs/examples/examples.md).
+
+---
+
+Quick Start
+----------
+
+```python
+from datetime import datetime
+from astrotrack.preprocess import load_satellite_data
+
+data = load_satellite_data(
+    tle_file="LEO_TLE_file.txt",
+    target_date=datetime(2025, 1, 18, 12, 25, 8),
+    obs_len=3600, 
+    traj_res=60,
+    obs_lat=51.5,
+    obs_lon=-0.1,
+    R=2000,
+    horizon_data="Horizon-Profile.csv", 
+    satcon="STARLINK"
+)
+```
 
 > **Generating Epoch Times with Skyfield**
 > The following code can be used to initialise a time array for satellite propagation:

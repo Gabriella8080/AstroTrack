@@ -3,15 +3,15 @@ from datetime import datetime
 from skyfield.api import load
 import matplotlib.pyplot as plt
 import numpy as np
-from AstroTrack.preprocess import load_satellite_data
-from AstroTrack.satcon_animate import animate_trajectories
-from AstroTrack.satcon_properties import (
+from astrotrack.preprocess import load_satellite_data
+from astrotrack.satcon_animate import animate_trajectories
+from astrotrack.satcon_properties import (
     plot_satellite_trajectory,
     plot_flyover_histogram_by_norad,
     plot_satellite_metric,
     filter_by_norads
 )
-from AstroTrack.doppler_analysis import (
+from astrotrack.doppler_analysis import (
     check_doppler_resolution,
     plot_doppler_shifts
 )
