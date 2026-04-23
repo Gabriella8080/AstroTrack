@@ -68,8 +68,7 @@ data = load_satellite_data(
 )
 ```
 
-> **Generating Epoch Times with Skyfield**
-> The following code can be used to initialise a time array for satellite propagation:
+> **Generating Epoch Times with Skyfield**: The following code can be used to initialise a time array for satellite propagation.
 >
 >```python
 >import numpy as np
@@ -90,6 +89,6 @@ data = load_satellite_data(
 
 Example Workflow:
 ----------
-Please refer to [this workflow](docs/examples/example_script.py) for a more comprehensive demonstration using **AstroTrack**, including usage of an example [horizon profile](docs/examples/REACH-Horizon.csv) from the REACH experiment ([de Lera Acedo et al.](https://doi.org/10.1038/s41550-022-01709-9)) and [TLE catalogue](docs/examples/LEO-catalogue.txt) compiled from [Space-Track](www.space-track.org). 
+Please refer to [this workflow](docs/examples/example_script.py) for a more comprehensive demonstration using **AstroTrack**, including usage of an example [horizon profile](docs/examples/REACH-Horizon.csv) from the REACH experiment ([de Lera Acedo et al.](https://doi.org/10.1038/s41550-022-01709-9)) and a [TLE catalogue](docs/examples/LEO-catalogue.txt) compiled from [Space-Track](www.space-track.org). 
 
-An [baseline horizon profile](docs/baseline_horizon.csv) corresponding to an idealised flat horizon is also provided. This can be used or modified by the user to incorporate site-specific observational constraints.
+A [baseline horizon profile](docs/baseline_horizon.csv) corresponding to an idealised flat horizon is also provided. This can be used directly, or modified by the user to incorporate site-specific observational constraints.

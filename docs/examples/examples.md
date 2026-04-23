@@ -26,14 +26,16 @@ data = load_satellite_data(
 
 **User Inputs:**
 
-- `tle_file`: Path to a TLE plaintext file, where a single TLE (from [CelesTrak](https://celestrak.org/)) or a LEO TLE catalogue (from [Space-Track](https://www.space-track.org)) are both supported formats.
-- `target_date`: Observation date and time as a `datetime` object.
-- `obs_len`: Observation duration in seconds.
-- `traj_res`: Trajectory resolution in seconds ($\Delta \text{t}$ between positions).
-- `obs_lat, obs_lon`: Observer location in degrees (latitude, longitude).
-- `R`: Radial constraint in km (distance from observer to include satellites).
-- `horizon_data`: Optional CSV file or list defining the local horizon as azimuth-elevation pairs. Use `baseline_horizon.csv` for default baseline flat horizon.
-- `satcon`: LEO satellite constellation name as string (e.g. `'OneWeb'`, `'STARLINK'`).
+| Parameter | Description |
+|----------|-------------|
+|`tle_file` | Path to a TLE plaintext file, where a single TLE (from [CelesTrak](https://celestrak.org/)) or a LEO TLE catalogue (from [Space-Track](https://www.space-track.org)) are both supported formats. |
+|`target_date` | Observation date and time as a `datetime` object. |
+|`obs_len` | Observation duration in seconds. |
+|`traj_res` | Trajectory resolution in seconds ($\Delta \text{t}$ between positions). |
+|`obs_lat, obs_lon` | Observer location in degrees (latitude, longitude). |
+|`R` | Radial constraint in km (distance from observer to include satellites). |
+|`horizon_data` | Optional CSV file or list defining the local horizon as azimuth-elevation pairs. Use `baseline_horizon.csv` for default baseline flat horizon. |
+|`satcon` | LEO satellite constellation name as string (e.g. `'OneWeb'`, `'STARLINK'`). |
 ---
 
 **2. Satellite Filtering & Properties (`satcon_properties`)**
