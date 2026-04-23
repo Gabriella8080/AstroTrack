@@ -5,7 +5,7 @@ AstroTrack
 
 <br>
 <div align="center">
-  <img src="tests/animated_satellites_e30_a300.gif" width="400">
+  <img src="docs/images/animated_satellites_e30_a300.gif" width="400">
 </div>
 <br>
 
@@ -45,7 +45,7 @@ Quickstart
 **AstroTrack** is organised into five core modules, where the package begins with `preprocess` to initialise and structure the satellite data for analysis. The other subsequent modules build up on this to derive orbital properties, Doppler behaviour with respect to a ground-based experiment, animations, and enabling spectral associations.
 <br>
 <div align="center">
-  <img src="package-modules.png" width="600">
+  <img src="docs/images/package-modules.png" width="600">
 </div>
 <br>
 We provide a brief overview below of each module, their key functions and example usage.
