@@ -108,6 +108,7 @@ plot_max_elevation_histogram(
 |`ref_points` | Optional list of [label: str, latitude: float, longitude: float] reference locations (e.g. `["London", 51.5, 0.128]`). |
 |`elev`, `azim`, `figsize`, `font_family`, `color`, `bin_width`, `show_legend` | Optional plotting parameters. |
 |`variable` | Satellite metric selection (e.g. `"Elevations"`, `"Distances"`). |
+
 Other thresholds or filtering parameters are also present where applicable.
 
 ---
@@ -244,7 +245,7 @@ plot_psd_satellite_time_series(
 |----------|-------------|
 |`spectra` | Two-dimensional Power Spectral Density (PSD) array, with time x frequency. |
 |`timestamps` | UTC Timestamp strings per time bin.
-|`bandwidth`: Experiment bandwidth in MHz. |
+|`bandwidth` | Experiment bandwidth in MHz. |
 |`freq_low_mhz`, `freq_high_mhz` | Chosen upper and lower frequency bounds for analysis in MHz. |
 |`psd_freq_ranges` | List of frequency ranges for multi-panel analysis such that [(low1, high1), (low2, high2), ...] in MHz. |
 |`norad_list` | List of NORAD ID's to only select specific satellites for plotting their metric. |
