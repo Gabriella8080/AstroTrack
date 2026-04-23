@@ -38,11 +38,11 @@ Modules Overview
 </div>
 <br>
 
-- **`preprocess`** — Load and filter satellite TLE data.
-- **`satcon_properties`** — Filter, analyse, and visualise satellite trajectories as well as their metrics. 
-- **`doppler_analysis`** — Evaluate Doppler shifts and detectability.
-- **`satcon_animate`** — Generate 3D trajectory animations.
-- **`psd_analysis`** — Visualise satellite flyovers with spectral data.
+- **`preprocess`**: Load and filter satellite TLE data.
+- **`satcon_properties`**: Filter, analyse, and visualise satellite trajectories as well as their metrics. 
+- **`doppler_analysis`**: Evaluate Doppler shifts and detectability.
+- **`satcon_animate`**: Generate 3D trajectory animations.
+- **`psd_analysis`**: Visualise satellite flyovers with spectral data.
 
 We provide a brief overview of all five modules, their key functions, and example usage [here](docs/examples/examples.md).
 
