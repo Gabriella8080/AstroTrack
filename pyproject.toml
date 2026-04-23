@@ -3,11 +3,11 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "AstroTrack"
+name = "astrotrack"
 keywords = ["astronomy", "satellite", "radio", "signal", "analysis", "LEO", "skyfield"]
 version = "0.1.0"
 description = "A tool for analysing and investigating LEO satellite flyover occurrences with contamination in radio astronomy observational data."
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.9"
 authors = [
     { name = "Gabriella Mariam Zahra Rajpoot", email = "LetterToGabi@gmail.com" }
@@ -30,5 +30,7 @@ dependencies = [
 dev = [
     "pytest>=8.0",
     "build>=1.0",
-    "twine>=6.0"
+    "twine>=6.0",
+    "black",
+    "ruff"
 ]
