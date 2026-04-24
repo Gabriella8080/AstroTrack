@@ -31,9 +31,7 @@ def load_hdf5(
 
             obs_group = f["observation_data"]
             if spectra_key not in obs_group:
-                raise ValueError(
-                    f"HDF5 file missing spectra dataset: '{spectra_key}'"
-                    )
+                raise ValueError(f"HDF5 file missing spectra dataset: '{spectra_key}'")
             if timestamps_key not in obs_group:
                 raise ValueError(
                     f"HDF5 file missing timestamps dataset: '{timestamps_key}'"
@@ -42,7 +40,8 @@ def load_hdf5(
             spectra = obs_group[spectra_key][:]
             timestamps = obs_group[timestamps_key][:]
             utc_timestamps = [
-                datetime.fromtimestamp(ts[0]).strftime("%H:%M:%S") for ts in timestamps  # noqa: E501
+                datetime.fromtimestamp(ts[0]).strftime("%H:%M:%S")
+                for ts in timestamps  # noqa: E501
             ]
 
     except (OSError, KeyError, ValueError) as e:
@@ -80,12 +79,7 @@ def freq_index(bin_idx, total_bins, full_bandwidth_mhz=200):
     return bin_idx * (full_bandwidth_mhz / total_bins)
 
 
-def get_frequency_bin_range(
-        freq_min,
-        freq_max,
-        total_bins,
-        full_bandwidth_mhz=200
-):
+def get_frequency_bin_range(freq_min, freq_max, total_bins, full_bandwidth_mhz=200):
     """
     Compute start and end bin indices for specified frequency range.
 
@@ -96,7 +90,7 @@ def get_frequency_bin_range(
         full_bandwidth_mhz (float): Total bandwidth of spectrum [MHz].
 
     Output:
-        (tuple[int]): Start and end bin index corresponding 
+        (tuple[int]): Start and end bin index corresponding
         to freq_min and freq_max.
     """
     return hdf5_index(freq_min, total_bins, full_bandwidth_mhz), freq_index(
@@ -107,7 +101,7 @@ def get_frequency_bin_range(
 def plot_psd_with_satellite_metric(
     spectra: np.ndarray,
     utc_timestamps: list[str],
-    all_satellite_data: list[dict],
+    satellite_data: list[dict],
     variable: str = "Elevations",
     bandwidth: float = 200,
     freq_low_mhz: float = 40,
@@ -126,7 +120,7 @@ def plot_psd_with_satellite_metric(
     spectra (2D np.ndarray): PSD measurements (time x frequency bins).
     utc_timestamps (list[str]): 'HH:MM:SS' formatted
                                 timestamps matching spectra.
-    all_satellite_data (list of dict): Preprocessed satellite data.
+    satellite_data (list of dict): Preprocessed satellite data.
     variable (str): Satellite variable to plot ('Elevations', 'Distances').
     freq_low_mhz, freq_high_mhz (float): Frequency range to plot [MHz].
     v_min, v_max (float): Color scale for PSD.
@@ -143,8 +137,7 @@ def plot_psd_with_satellite_metric(
 
     utc_to_idx = {t: i for i, t in enumerate(utc_timestamps)}
     fig, (ax1, ax2) = plt.subplots(
-        2, 1, figsize=(14, 8), sharex=True, 
-                    gridspec_kw={"height_ratios": [4, 2]}
+        2, 1, figsize=(14, 8), sharex=True, gridspec_kw={"height_ratios": [4, 2]}
     )
     cax = fig.add_axes([0.92, 0.105, 0.02, 0.775])
 
@@ -159,12 +152,10 @@ def plot_psd_with_satellite_metric(
     )
     fig.colorbar(im, cax=cax, label="PSD Intensity")
     ax1.set_ylabel("Frequency (MHz)")
-    ax1.set_title(
-        f"Power Spectral Density ({freq_low_mhz}-{freq_high_mhz} MHz)"
-        )
+    ax1.set_title(f"Power Spectral Density ({freq_low_mhz}-{freq_high_mhz} MHz)")
 
     norads = []
-    for sat_data in all_satellite_data:
+    for sat_data in satellite_data:
         tle_line_2 = sat_data["TLE"][1]
         norad_id = tle_line_2.split()[1]
         values = np.array(sat_data[variable])
@@ -184,9 +175,7 @@ def plot_psd_with_satellite_metric(
                 aligned_vals[utc_to_idx[t_str]] = val
 
         if np.any(~np.isnan(aligned_vals)):
-            ax2.plot(
-                np.arange(num_timestamps), aligned_vals, label=norad_id, lw=1
-                )
+            ax2.plot(np.arange(num_timestamps), aligned_vals, label=norad_id, lw=1)
             norads.append(norad_id)
 
     if variable == "Distances":
@@ -195,9 +184,7 @@ def plot_psd_with_satellite_metric(
     ax2.set_xlabel("Timestamp (UTC)")
     ax2.set_title(f"Satellite {variable} Over Time")
 
-    x_indices = np.linspace(
-        0, num_timestamps - 1, min(30, num_timestamps), dtype=int
-        )
+    x_indices = np.linspace(0, num_timestamps - 1, min(30, num_timestamps), dtype=int)
     x_labels = [utc_timestamps[i] for i in x_indices]
     ax1.set_xticks(x_indices)
     ax1.set_xticklabels(x_labels, rotation=45, ha="right")
@@ -218,7 +205,7 @@ def plot_psd_with_satellite_metric(
 
     fig.suptitle(
         f"Flyovers from {utc_timestamps[0]} to {utc_timestamps[-1]} "
-        f"({len(all_satellite_data)} satellites)",
+        f"({len(satellite_data)} satellites)",
         fontsize=16,
     )
     plt.tight_layout(rect=[0, 0, 0.9, 0.95])
@@ -230,7 +217,7 @@ def plot_psd_with_satellite_metric(
 def plot_psd_satellite_time_series(
     spectra: np.ndarray,
     utc_timestamps: list[str],
-    all_sat_data: list[dict],
+    satellite_data: list[dict],
     norad_list: list[str] = None,
     satellite_variable: str = "Elevations",
     R: float = 2000,
@@ -251,7 +238,7 @@ def plot_psd_satellite_time_series(
     Parameters:
         spectra (np.ndarray): 2D array (time x frequency bins) of PSD measurements.
         utc_timestamps (list[str]): Time strings in 'HH:MM:SS' format.
-        all_sat_data (list[dict]): Preprocessed satellite data.
+        satellite_data (list[dict]): Preprocessed satellite data.
         norad_list (list[str]): List of NORAD IDs for satellite panels, if provided.
         satellite_variable (str): Satellite variable to plot ('Elevations' or 'Distances').
         R (float): Radial constraint [km].
@@ -334,7 +321,7 @@ def plot_psd_satellite_time_series(
         if i == 0 and cax is not None:
             fig.colorbar(im, cax=cax, label="PSD Intensity")
 
-    sat_dict = {sat["TLE"][1].split()[1]: sat for sat in all_sat_data}
+    sat_dict = {sat["TLE"][1].split()[1]: sat for sat in satellite_data}
     for i, norad in enumerate(norad_list):
         ax = axes[1 + num_psd_panels + i]
         if norad not in sat_dict:

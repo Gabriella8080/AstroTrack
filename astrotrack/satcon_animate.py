@@ -62,18 +62,18 @@ def animate_trajectories(
     theta = np.linspace(0, 2 * np.pi, 201)
     cth, sth, zth = np.cos(theta), np.sin(theta), np.zeros_like(theta)
     lon_lines, lat_lines = [], []
-    lon0 = re*np.vstack((cth, zth, sth))
+    lon0 = re * np.vstack((cth, zth, sth))
     for phi in np.radians(np.arange(0, 180, 15)):
         cph, sph = np.cos(phi), np.sin(phi)
         cph, sph = [f(phi) for f in [np.cos, np.sin]]
-        lon = np.vstack((lon0[0]*cph - lon0[1]*sph,
-                         lon0[1]*cph + lon0[0]*sph,
-                         lon0[2]) )
+        lon = np.vstack(
+            (lon0[0] * cph - lon0[1] * sph, lon0[1] * cph + lon0[0] * sph, lon0[2])
+        )
         lon_lines.append(lon)
 
     for phi in np.radians(np.arange(-75, 90, 15)):
         cph, sph = [f(phi) for f in [np.cos, np.sin]]
-        lat = re*np.vstack((cth*cph, sth*cph, zth+sph))
+        lat = re * np.vstack((cth * cph, sth * cph, zth + sph))
         lat_lines.append(lat)
 
     fig = plt.figure(figsize=(10, 10))
@@ -88,7 +88,6 @@ def animate_trajectories(
             x, y, z = lat_lon_to_xyz(re, lat, lon)
             h = ax.scatter(x, y, z, s=80, alpha=0.7, label=label)
             ref_handles.append(h)
-
 
     plots, trajectories = [], []
     sat_handles = []

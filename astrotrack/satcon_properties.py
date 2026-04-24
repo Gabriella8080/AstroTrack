@@ -256,7 +256,7 @@ def plot_satellite_metric(
         plt.figure(figsize=figsize)
         all_epochs = []
         color_cycle = plt.rcParams["axes.prop_cycle"].by_key()["color"]
-        
+
         ylabel_map = {
             "Elevations": "Elevation ($\degree$)",
             "Azimuths": "Azimuth ($\degree$)",
@@ -284,8 +284,7 @@ def plot_satellite_metric(
             all_epochs.extend(epochs_np)
 
             norad = (
-                sat.get("TLE", ["", ""])[1].split()[1]
-                if sat.get("TLE") else f"sat_{i}"
+                sat.get("TLE", ["", ""])[1].split()[1] if sat.get("TLE") else f"sat_{i}"
             )
 
             color = color_cycle[i % len(color_cycle)]
@@ -303,13 +302,7 @@ def plot_satellite_metric(
                     color=color,
                     linewidth=1,
                 )
-            plt.scatter(
-                epochs_np,
-                arr,
-                s=10,
-                color=color,
-                label=f"{norad}"
-            )
+            plt.scatter(epochs_np, arr, s=10, color=color, label=f"{norad}")
         handles, labels = plt.gca().get_legend_handles_labels()
         max_items = 10
         if handles:
@@ -319,7 +312,7 @@ def plot_satellite_metric(
                 loc="best",
                 ncol=2,
                 fontsize="small",
-                title=f"NORADS ({min(len(labels), max_items)}/{len(labels)})"
+                title=f"NORADS ({min(len(labels), max_items)}/{len(labels)})",
             )
 
         plt.xlabel("Timestamp (UTC)")
@@ -346,7 +339,6 @@ def plot_satellite_metric(
         plt.xticks(rotation=45, ha="right")
         plt.tight_layout()
         plt.show(block=True)
-
 
 
 def plot_max_elevation_histogram(

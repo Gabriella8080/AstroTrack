@@ -32,18 +32,14 @@ def plot_doppler_shifts(
         plt.figure(figsize=figsize)
 
         epochs = satellite_data["Epochs"]
-        velocity_r = np.array(
-            satellite_data["Velocities"]
-            )  # relative velocity in km/s
+        velocity_r = np.array(satellite_data["Velocities"])  # km/s
         elevations = satellite_data["Elevations"]
         tle_line_2 = satellite_data["TLE"][1]
         norad_id = tle_line_2.split()[1]
         theta_max = max(elevations)
         epochs_np = np.array([np.datetime64(e) for e in epochs])
-        center_time = epochs_np[len(epochs_np) // 2]
-        relative_time = (
-            epochs_np - center_time) / np.timedelta64(1, "m"
-                                                      )  # minutes
+        center_time = epochs_np[len(epochs_np)//2]
+        relative_time = (epochs_np - center_time)/np.timedelta64(1, "m")  # mins
         doppler_shift = (velocity_r / c) * f0
 
         plt.scatter(
@@ -55,15 +51,11 @@ def plot_doppler_shifts(
         )
 
         print_time = (
-            center_time.astype(
-                "datetime64[s]"
-                ).tolist().strftime("%Y-%m-%d %H:%M:%S")
+            center_time.astype("datetime64[s]").tolist().strftime("%Y-%m-%d %H:%M:%S")
         )
         plt.xlabel("Visibility Time (min)")
         plt.ylabel("Doppler Shift (kHz)")
-        plt.title(
-            f"NORAD {norad_id} Doppler Shift (Centered at {print_time}):"
-            )
+        plt.title(f"NORAD {norad_id} Doppler Shift (Centered at {print_time}):")
         plt.axhline(0, color="black", linestyle="--")
         plt.xlim(-time_window, time_window)
         plt.legend(loc="upper right", fontsize=10)
@@ -72,11 +64,7 @@ def plot_doppler_shifts(
 
 
 def check_doppler_resolution(
-    all_satellite_data,
-    f0_array,
-    resolution=12_000,
-    experiment="REACH",
-    return_df=False
+    all_satellite_data, f0_array, resolution=12_000, experiment="REACH", return_df=False
 ):
     """Check if Doppler shift can be resolved,
     given experiment's frequency resolution.

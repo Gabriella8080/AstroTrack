@@ -199,7 +199,7 @@ from astrotrack.psd_analysis import (
 Function Signatures:
 
 ```python
-load_hdf5(
+spectra, hdf_timestamps = load_hdf5(
     file_path: str,
     spectra_key: str="antenna_spectra",
     timestamps_key: str="antenna_timestamps"

@@ -97,9 +97,7 @@ def compute_sat_properties(sat, location, epoch):
     sat_xyz = sat_at_epoch.position.km
     astropy_time = Time(epoch.utc_iso())
 
-    observer_xyz = np.array(
-        [location.x.value, location.y.value, location.z.value]
-        )
+    observer_xyz = np.array([location.x.value, location.y.value, location.z.value])
     displacement = np.array(sat_xyz) - observer_xyz
     distance = np.linalg.norm(displacement)
     unit_displacement = displacement / distance
@@ -107,9 +105,7 @@ def compute_sat_properties(sat, location, epoch):
     los_velocity = -np.dot(relative_velocity, unit_displacement)
 
     altaz_frame = AltAz(obstime=astropy_time, location=location)
-    sat_itrs = ITRS(
-        CartesianRepresentation(sat_xyz * u.km), obstime=astropy_time
-        )
+    sat_itrs = ITRS(CartesianRepresentation(sat_xyz * u.km), obstime=astropy_time)
     sat_altaz = sat_itrs.transform_to(altaz_frame)
     azimuth = sat_altaz.az.value
     elevation = sat_altaz.alt.value
@@ -177,9 +173,7 @@ def find_target_sats(
          flyover trajectory properties
     """
     sat_data_list = []
-    obs_loc = EarthLocation.from_geodetic(
-        obs_lon, obs_lat, height=obs_height * u.m
-        )
+    obs_loc = EarthLocation.from_geodetic(obs_lon, obs_lat, height=obs_height * u.m)
     obs_location = obs_loc.to("km")
 
     for index, tle in enumerate(

@@ -9,19 +9,16 @@ from astrotrack.satcon_properties import (
     plot_satellite_trajectory,
     plot_flyover_histogram_by_norad,
     plot_satellite_metric,
-    filter_by_norads
+    filter_by_norads,
 )
-from astrotrack.doppler_analysis import (
-    check_doppler_resolution,
-    plot_doppler_shifts
-)
+from astrotrack.doppler_analysis import check_doppler_resolution, plot_doppler_shifts
 
 # Time Array:
 ts = load.timescale()
-length = 3600 # in seconds
+length = 3600  # in seconds
 orbit_duration = np.arange(0, length + 1, 1)
 epochs_of_orbit = ts.utc(2025, 6, 15, 12, 25, 8 + orbit_duration)
-ref_locations = [["London",51.5,0.128], ["REACH",-30.7,-21.5]]
+ref_locations = [["London", 51.5, 0.128], ["REACH", -30.7, -21.5]]
 
 data = load_satellite_data(
     tle_file="LEO-catalogue.txt",
@@ -32,7 +29,7 @@ data = load_satellite_data(
     obs_lon=-0.1,
     R=1500,
     horizon_data="REACH-Horizon.csv",
-    satcon="OneWeb"
+    satcon="OneWeb",
 )
 
 plot_satellite_trajectory(
@@ -43,7 +40,7 @@ plot_satellite_trajectory(
     ref_points=ref_locations,
     show_legend=True,
     figsize=(8, 8),
-    font_family="Times New Roman"
+    font_family="Times New Roman",
 )
 
 plot_flyover_histogram_by_norad(
@@ -53,7 +50,7 @@ plot_flyover_histogram_by_norad(
     bin_width=500,
     color="lightpink",
     font_family="Times New Roman",
-    figsize=(8, 8)
+    figsize=(8, 8),
 )
 
 plot_satellite_metric(
@@ -62,25 +59,20 @@ plot_satellite_metric(
     threshold=None,
     invert=False,
     font_family="Times New Roman",
-    figsize=(8, 8)
+    figsize=(8, 8),
 )
 
 animate_trajectories(
     data,
     ref_points=ref_locations,
-    duration_hours = 4,
-    step_seconds = 60,
+    duration_hours=4,
+    step_seconds=60,
     start_time=datetime(2025, 6, 15, 12, 25, 8),
     output_dir=".",
     filename_prefix="animated_satellites",
 )
 
 subset = filter_by_norads(data, exact_id=56713)
-f0_array=[110e6, 137.5e6]
-check_doppler_resolution(
-    subset,
-    f0_array,
-    resolution=12_000,
-    experiment="REACH"
-)
-plot_doppler_shifts(data,f0_array[0])
+f0_array = [110e6, 137.5e6]
+check_doppler_resolution(subset, f0_array, resolution=12_000, experiment="REACH")
+plot_doppler_shifts(data, f0_array[0])
