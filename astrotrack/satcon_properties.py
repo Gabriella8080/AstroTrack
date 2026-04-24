@@ -314,6 +314,7 @@ def plot_satellite_metric(
 
         plt.xticks(rotation=45, ha="right")
         plt.tight_layout()
+        plt.show(block=True)
 
 
 def plot_max_elevation_histogram(

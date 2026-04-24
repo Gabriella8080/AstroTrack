@@ -24,7 +24,7 @@ To alternatively install from source:
 ```bash
     git clone https://github.com/Gabriella8080/AstroTrack.git
     cd astrotrack
-    pip install -e .
+    pip install -e ".[dev]"
 ```
 ---
 
