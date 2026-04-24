@@ -247,7 +247,7 @@ def plot_satellite_metric(
     Parameters:
         all_satellite_data (list[dict]): List of satellite data dictionaries.
         variable (str): The dictionary key to plot ("Elevations", "Distances").
-        threshold (float or None): Optional threshold; if given, skip satellites whose data never cross it.
+        threshold (float or None): Optional threshold.
         invert(bool): Invert y-axis (for elevation).
         font_family (str): Font family for plot text.
         figsize (tuple): Figure size for matplotlib.
@@ -256,31 +256,60 @@ def plot_satellite_metric(
         plt.figure(figsize=figsize)
         all_epochs = []
         color_cycle = plt.rcParams["axes.prop_cycle"].by_key()["color"]
+        
+        ylabel_map = {
+            "Elevations": "Elevation ($\degree$)",
+            "Azimuths": "Azimuth ($\degree$)",
+            "Distances": "Distance from Observer (km)",
+            "Velocities": "Line-of-sight Velocity (km/s)",
+        }
+
         for i, sat in enumerate(all_satellite_data):
             vals = sat.get(variable, [])
             epochs = sat.get("Epochs", [])
             if not vals or not epochs:
                 continue
-
             arr = np.array(vals, dtype=float)
             if threshold is not None:
                 if variable == "Distances" and not np.any(arr < threshold):
                     continue
                 if variable == "Elevations" and not np.any(arr > threshold):
                     continue
+
             try:
                 epochs_np = np.array([np.datetime64(e) for e in epochs])
             except Exception:
                 continue
 
             all_epochs.extend(epochs_np)
+
             norad = (
-                sat.get("TLE", ["", ""])[1].split()[1] if sat.get("TLE") else f"sat_{i}"
+                sat.get("TLE", ["", ""])[1].split()[1]
+                if sat.get("TLE") else f"sat_{i}"
             )
+
             color = color_cycle[i % len(color_cycle)]
-
-            plt.scatter(epochs_np, arr, s=10, color=color, label=f"{norad}")
-
+            # break into segments if large time gaps:
+            times_int = epochs_np.astype("datetime64[s]").astype("int")
+            gap_threshold = 2700  # 45 mins
+            gaps = np.where(np.diff(times_int) > gap_threshold)[0]
+            segments = np.split(np.arange(len(arr)), gaps + 1)
+            for seg in segments:
+                if len(seg) < 2:
+                    continue
+                plt.plot(
+                    epochs_np[seg],
+                    arr[seg],
+                    color=color,
+                    linewidth=1,
+                )
+            plt.scatter(
+                epochs_np,
+                arr,
+                s=10,
+                color=color,
+                label=f"{norad}"
+            )
         handles, labels = plt.gca().get_legend_handles_labels()
         max_items = 10
         if handles:
@@ -294,11 +323,12 @@ def plot_satellite_metric(
             )
 
         plt.xlabel("Timestamp (UTC)")
-        plt.ylabel(variable)
+        plt.ylabel(ylabel_map.get(variable, variable))  # ✅ improved label
         plt.title(f"{variable} vs Time for Selected Satellites")
         plt.grid(alpha=0.3)
 
         ax = plt.gca()
+
         if invert:
             ax.invert_yaxis()
 
@@ -309,12 +339,14 @@ def plot_satellite_metric(
                 max_time.astype("datetime64[s]").astype("int"),
                 num=15,
             ).astype("datetime64[s]")
+
             ax.set_xticks(tick_times)
             ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M:%S"))
 
         plt.xticks(rotation=45, ha="right")
         plt.tight_layout()
         plt.show(block=True)
+
 
 
 def plot_max_elevation_histogram(

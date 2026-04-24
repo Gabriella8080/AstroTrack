@@ -9,69 +9,41 @@ from astrotrack.preprocess import (
     load_horizon_profile,
 )
 
-# -------------------------
-# Helper: minimal valid TLE
-# -------------------------
-VALID_TLE = (
-    "1 25544U 98067A   24100.00000000  .00016717  00000+0  10270-3 0  9000",
-    "2 25544  51.6445  23.4362 0007417  43.3475  88.1382 15.50000000 00000",
-)
-
-# -------------------------
-# parse_tle_file tests
-# -------------------------
+test_tle = """1 45184U 20012G   25064.25002315  .00356607  59443-4  10540-2 0  9990
+2 45184  53.0352 192.9089 0003887 301.4292 249.9972 15.92081662279489"""
 
 @pytest.mark.parametrize(
     "file_contents,satcon,expected_len",
     [
-        # Standard 2-line TLE
-        ("\n".join(VALID_TLE), None, 1),
-
-        # 3LE format with matching constellation
-        ("\n".join(["0 STARLINK-TEST", VALID_TLE[0], VALID_TLE[1]]), "STARLINK", 1),
-
-        # 3LE format with non-matching constellation
-        ("\n".join(["0 ONEWEB-TEST", VALID_TLE[0], VALID_TLE[1]]), "STARLINK", 0),
+        ("\n".join(test_tle), None, 1),
+        ("\n".join(["0 STARLINK-TEST", test_tle[0], test_tle[1]]), "STARLINK", 1),
+        ("\n".join(["0 ONEWEB-TEST", test_tle[0], test_tle[1]]), "STARLINK", 0),
     ],
 )
-def test_parse_tle_file(tmp_path, file_contents, satcon, expected_len):
-    file = tmp_path / "tle.txt"
+def test_parse_tle_file(path, file_contents, satcon, expected_len):
+    file = path/"tle.txt"
     file.write_text(file_contents)
-
     result = parse_tle_file(str(file), satcon)
-
     assert isinstance(result, list)
     assert len(result) == expected_len
 
-
-# -------------------------
-# filter_tles_by_date tests
-# -------------------------
-
 @pytest.mark.parametrize(
     "target_date",
-    [
-        datetime(2024, 4, 10),
-        datetime(2023, 1, 1),
-    ],
+    [datetime(2024, 4, 10), datetime(2023, 1, 1),],
 )
 def test_filter_tles_by_date_runs(target_date):
-    """Test that filtering runs without crashing and returns valid structure."""
-    tles = [VALID_TLE]
+    """Test if filtering runs without crashing and returns valid structure."""
+    tles = [test_tle]
 
     result = filter_tles_by_date(tles, target_date)
 
     assert isinstance(result, list)
     assert all(len(tle) == 2 for tle in result)
 
-
-# -------------------------
-# load_horizon_profile tests (tuple input)
-# -------------------------
-
+# Testing load_horizon_profile:
 @pytest.mark.parametrize(
-    "azi,elev",
-    [
+    "azi,elev", 
+    [ # test horizon profile
         ([0, 90, 180], [0, 5, 0]),
         ([0, 180], [10, 10]),
         ([45, 135, 225], [1, 2, 3]),
@@ -83,11 +55,7 @@ def test_load_horizon_from_tuple(azi, elev):
     assert np.array_equal(azi_out, np.array(azi))
     assert np.array_equal(elev_out, np.array(elev))
 
-
-# -------------------------
-# load_horizon_profile tests (CSV input)
-# -------------------------
-
+# Checking CSV input for load_horizon_profile:
 @pytest.mark.parametrize(
     "columns",
     [
