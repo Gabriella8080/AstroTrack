@@ -9,25 +9,27 @@ from astrotrack.preprocess import (
     load_horizon_profile,
 )
 
-test_tle = """1 45184U 20012G   25064.25002315  .00356607  59443-4  10540-2 0  9990
-2 45184  53.0352 192.9089 0003887 301.4292 249.9972 15.92081662279489"""
-
+test_tle = [
+    "1 45184U 20012G   25064.25002315  .00356607  59443-4  10540-2 0  9990",
+    "2 45184  53.0352 192.9089 0003887 301.4292 249.9972 15.92081662279489"
+]
 
 @pytest.mark.parametrize(
     "file_contents,satcon,expected_len",
     [
         ("\n".join(test_tle), None, 1),
-        ("\n".join(["0 STARLINK-TEST", test_tle[0], test_tle[1]]), "STARLINK", 1),
-        ("\n".join(["0 ONEWEB-TEST", test_tle[0], test_tle[1]]), "STARLINK", 0),
+        ("\n".join(["0 STARLINK-TEST", *test_tle]), "STARLINK", 1),
+        ("\n".join(["0 ONEWEB-TEST", *test_tle]), "STARLINK", 0),
     ],
 )
-def test_parse_tle_file(path, file_contents, satcon, expected_len):
-    file = path / "tle.txt"
+def test_parse_tle_file(tmp_path, file_contents, satcon, expected_len):
+    file = tmp_path / "tle.txt"
     file.write_text(file_contents)
+
     result = parse_tle_file(str(file), satcon)
+
     assert isinstance(result, list)
     assert len(result) == expected_len
-
 
 @pytest.mark.parametrize(
     "target_date",

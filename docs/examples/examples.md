@@ -218,7 +218,7 @@ plot_psd_with_satellite_metric(
     show_legend: bool=False,
     threshold: float=None,
     vertical_lines: list[str]=None,
-    cmap: str="Magma"
+    cmap: str="magma"
 )
 
 plot_psd_satellite_time_series(

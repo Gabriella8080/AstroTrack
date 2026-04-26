@@ -93,8 +93,9 @@ def get_frequency_bin_range(freq_min, freq_max, total_bins, full_bandwidth_mhz=2
         (tuple[int]): Start and end bin index corresponding
         to freq_min and freq_max.
     """
-    return hdf5_index(freq_min, total_bins, full_bandwidth_mhz), freq_index(
-        freq_max, total_bins, full_bandwidth_mhz
+    return (
+        hdf5_index(freq_min, total_bins, full_bandwidth_mhz),
+        hdf5_index(freq_max, total_bins, full_bandwidth_mhz),
     )
 
 
@@ -111,7 +112,7 @@ def plot_psd_with_satellite_metric(
     show_legend: bool = False,
     threshold: float = None,
     vertical_lines: list[str] = None,
-    cmap: str = "Magma",
+    cmap: str = "magma",
 ):
     """
     Plot PSD waterfall and chosen satellite variable aligned by time.
@@ -130,15 +131,21 @@ def plot_psd_with_satellite_metric(
     cmap (str): Colormap for PSD.
     """
     num_timestamps, total_bins = spectra.shape
+
     bin_start, bin_end = get_frequency_bin_range(
         freq_low_mhz, freq_high_mhz, total_bins, bandwidth
     )
+    bin_start, bin_end = int(bin_start), int(bin_end)
+
     spectra_subset = spectra[:, bin_start:bin_end]
 
-    utc_to_idx = {t: i for i, t in enumerate(utc_timestamps)}
+    utc_to_idx = _build_time_index_map(utc_timestamps)
+
     fig, (ax1, ax2) = plt.subplots(
-        2, 1, figsize=(14, 8), sharex=True, gridspec_kw={"height_ratios": [4, 2]}
+        2, 1, figsize=(14, 8), sharex=True,
+        gridspec_kw={"height_ratios": [4, 2]}
     )
+
     cax = fig.add_axes([0.92, 0.105, 0.02, 0.775])
 
     im = ax1.imshow(
@@ -150,66 +157,81 @@ def plot_psd_with_satellite_metric(
         vmax=v_max,
         extent=[0, num_timestamps - 1, freq_low_mhz, freq_high_mhz],
     )
+
     fig.colorbar(im, cax=cax, label="PSD Intensity")
+
     ax1.set_ylabel("Frequency (MHz)")
-    ax1.set_title(f"Power Spectral Density ({freq_low_mhz}-{freq_high_mhz} MHz)")
+    ax1.set_title(f"PSD ({freq_low_mhz}-{freq_high_mhz} MHz)")
 
     norads = []
+
     for sat_data in satellite_data:
-        tle_line_2 = sat_data["TLE"][1]
-        norad_id = tle_line_2.split()[1]
+        if "TLE" not in sat_data:
+            continue
+
+        norad_id = sat_data["TLE"][1].split()[1]
+
         values = np.array(sat_data[variable])
-        times = [
-            ep[-8:] if isinstance(ep, str) else ep.strftime("%H:%M:%S")
-            for ep in sat_data["Epochs"]
-        ]
+
+        times = [_to_hms(ep) for ep in sat_data["Epochs"]]
+
         if threshold is not None:
             if variable == "Distances" and not np.any(values < threshold):
                 continue
             if variable == "Elevations" and not np.any(values > threshold):
                 continue
 
-        aligned_vals = np.full(num_timestamps, np.nan)
-        for t_str, val in zip(times, values):
-            if t_str in utc_to_idx:
-                aligned_vals[utc_to_idx[t_str]] = val
+        aligned = np.full(num_timestamps, np.nan)
 
-        if np.any(~np.isnan(aligned_vals)):
-            ax2.plot(np.arange(num_timestamps), aligned_vals, label=norad_id, lw=1)
-            norads.append(norad_id)
+        matched = 0
+        for t, v in zip(times, values):
+            idx = utc_to_idx.get(t)
+            if idx is not None:
+                aligned[idx] = v
+                matched += 1
+
+        if matched == 0:
+            continue
+
+        ax2.plot(np.arange(num_timestamps), aligned, lw=1, label=norad_id)
+        norads.append(norad_id)
+
+    if len(norads) == 0:
+        print("⚠️ No satellites matched UTC timeline. Check time alignment.")
+        return
 
     if variable == "Distances":
         ax2.invert_yaxis()
+
     ax2.set_ylabel(variable)
     ax2.set_xlabel("Timestamp (UTC)")
-    ax2.set_title(f"Satellite {variable} Over Time")
+    ax2.set_title(f"Satellite {variable}")
 
-    x_indices = np.linspace(0, num_timestamps - 1, min(30, num_timestamps), dtype=int)
-    x_labels = [utc_timestamps[i] for i in x_indices]
-    ax1.set_xticks(x_indices)
-    ax1.set_xticklabels(x_labels, rotation=45, ha="right")
-    ax2.set_xticks(x_indices)
-    ax2.set_xticklabels(x_labels, rotation=45, ha="right")
-    ax1.set_xlim(0, num_timestamps - 1)
-    ax2.set_xlim(0, num_timestamps - 1)
+    x_idx = np.linspace(0, num_timestamps - 1, min(30, num_timestamps), dtype=int)
+    x_lbl = [utc_timestamps[i] for i in x_idx]
 
-    if vertical_lines is not None:
-        for t_str in vertical_lines:
-            if t_str in utc_to_idx:
-                idx = utc_to_idx[t_str]
-                for ax in (ax1, ax2):
-                    ax.axvline(idx, color="red", linestyle="--", lw=1)
+    ax1.set_xticks(x_idx)
+    ax1.set_xticklabels(x_lbl, rotation=45, ha="right")
+    ax2.set_xticks(x_idx)
+    ax2.set_xticklabels(x_lbl, rotation=45, ha="right")
+
+    if vertical_lines:
+        for t in vertical_lines:
+            idx = utc_to_idx.get(_to_hms(t))
+            if idx is not None:
+                ax1.axvline(idx, color="red", ls="--", lw=1)
+                ax2.axvline(idx, color="red", ls="--", lw=1)
 
     if show_legend:
-        ax2.legend(loc="upper right", title="NORAD IDs")
+        ax2.legend()
 
     fig.suptitle(
-        f"Flyovers from {utc_timestamps[0]} to {utc_timestamps[-1]} "
-        f"({len(satellite_data)} satellites)",
+        f"Flyovers ({len(norads)} satellites matched)",
         fontsize=16,
     )
+
     plt.tight_layout(rect=[0, 0, 0.9, 0.95])
-    plt.show(block=True)
+    plt.show()
 
     print(f"Plotted NORADs: {norads} | Count: {len(norads)}")
 
@@ -252,161 +274,103 @@ def plot_psd_satellite_time_series(
         vertical_lines (list[str]): UTC times to draw vertical dashed lines.
     """
     num_timestamps, total_bins = spectra.shape
-    utc_to_idx = {t: i for i, t in enumerate(utc_timestamps)}
+
+    utc_to_idx = _build_time_index_map(utc_timestamps)
 
     if psd_freq_ranges is None:
-        psd_freq_ranges = [(0, bandwidth)]  # default to full bandwidth
+        psd_freq_ranges = [(0, bandwidth)]
 
-    num_psd_panels = len(psd_freq_ranges)
-    num_sat_panels = len(norad_list)
+    if norad_list is None:
+        norad_list = [
+            sat["TLE"][1].split()[1]
+            for sat in satellite_data
+            if "TLE" in sat
+        ]
 
-    height_ratios = [1] + [2.5] * num_psd_panels + [0.6] * num_sat_panels
+    if len(norad_list) == 0:
+        print("⚠️ No NORAD list available.")
+        return
+
+    num_psd = len(psd_freq_ranges)
+    num_sat = len(norad_list)
+
     fig, axes = plt.subplots(
-        1 + num_psd_panels + num_sat_panels,
+        1 + num_psd + num_sat,
         1,
-        figsize=(14, 4 + 1.1 * (num_psd_panels + num_sat_panels)),
+        figsize=(14, 4 + 1.1 * (num_psd + num_sat)),
         sharex=True,
-        gridspec_kw={"height_ratios": height_ratios, "hspace": 0.15},
     )
-    if len(axes.shape) == 0:
-        axes = [axes]
 
-    ax_time = axes[0]
-    if target_freqs_mhz is not None:
-        freq_bins = {}
-        for f in target_freqs_mhz:
-            bin_idx = int(round(f / bandwidth * total_bins))
-            bin_idx = max(0, min(bin_idx, total_bins - 1))
-            if bin_idx not in freq_bins:
-                freq_bins[bin_idx] = [f]
-            else:
-                freq_bins[bin_idx].append(f)
+    axes = np.atleast_1d(axes)
 
-        for b, freqs in freq_bins.items():
-            ts = spectra[:, b]
-            label = ", ".join(f"{freq:.1f} MHz" for freq in freqs)
-            ax_time.plot(np.arange(num_timestamps), ts, lw=1.6, label=label)
-
-        ax_time.set_ylabel("PSD")
-        ax_time.set_title("Narrowband Frequency Time-Series")
-        ax_time.legend(loc="upper right", fontsize=8, frameon=True)
-
-    cax = fig.add_axes([0.92, 0.55, 0.02, 0.35]) if num_psd_panels > 0 else None
+    # --- PSD PANELS ---
     for i, (low, high) in enumerate(psd_freq_ranges):
         ax = axes[1 + i]
-        start_bin = int(round(low / bandwidth * total_bins))
-        end_bin = int(round(high / bandwidth * total_bins))
-        end_bin = min(end_bin, total_bins - 1)
-        subset = spectra[:, start_bin:end_bin]
+
+        s = int(round(low / bandwidth * total_bins))
+        e = int(round(high / bandwidth * total_bins))
+        e = min(e, total_bins - 1)
+
         im = ax.imshow(
-            subset.T,
+            spectra[:, s:e].T,
             aspect="auto",
             origin="lower",
             cmap=cmap,
             vmin=vmin,
             vmax=vmax,
-            extent=[0, num_timestamps - 1, low, high],
         )
-        ax.set_ylabel("Freq (MHz)")
-        ax.text(
-            0.01,
-            0.95,
-            f"{low}-{high} MHz",
-            transform=ax.transAxes,
-            ha="left",
-            va="top",
-            fontsize=10,
-            color="maroon",
-        )
-        if i == 0 and cax is not None:
-            fig.colorbar(im, cax=cax, label="PSD Intensity")
 
-    sat_dict = {sat["TLE"][1].split()[1]: sat for sat in satellite_data}
+        ax.set_ylabel("Freq (MHz)")
+
+    sat_dict = {
+        sat["TLE"][1].split()[1]: sat
+        for sat in satellite_data
+        if "TLE" in sat
+    }
+
+    plotted = []
+
+    # --- SATELLITES ---
     for i, norad in enumerate(norad_list):
-        ax = axes[1 + num_psd_panels + i]
+        ax = axes[1 + num_psd + i]
+
         if norad not in sat_dict:
-            ax.text(
-                0.5,
-                0.5,
-                f"No data for NORAD {norad}",
-                ha="center",
-                va="center",
-                fontsize=12,
-                color="red",
-            )
-            ax.set_ylim(0, 1)
-            ax.set_yticks([])
+            ax.text(0.5, 0.5, f"No data {norad}", ha="center")
             continue
 
         sat = sat_dict[norad]
+
         values = np.array(sat[satellite_variable])
-        times = [
-            ep[-8:] if isinstance(ep, str) else ep.strftime("%H:%M:%S")
-            for ep in sat["Epochs"]
-        ]
+        times = [_to_hms(ep) for ep in sat["Epochs"]]
+
         aligned = np.full(num_timestamps, np.nan)
-        for t_str, val in zip(times, values):
-            if t_str in utc_to_idx:
-                aligned[utc_to_idx[t_str]] = val
 
-        if threshold is not None:
-            if satellite_variable == "Distances" and not np.any(values < threshold):
-                ax.set_visible(False)
-                continue
-            if satellite_variable == "Elevations" and not np.any(values > threshold):
-                ax.set_visible(False)
-                continue
+        matched = 0
+        for t, v in zip(times, values):
+            idx = utc_to_idx.get(t)
+            if idx is not None:
+                aligned[idx] = v
+                matched += 1
 
-        ax.plot(np.arange(num_timestamps), aligned, lw=1, color="deeppink")
-        ax.text(
-            1.01,
-            0.5,
-            f"NORAD {norad}",
-            transform=ax.transAxes,
-            va="center",
-            ha="left",
-            fontsize=9,
-        )
+        if matched == 0:
+            continue
 
-        valid = aligned[~np.isnan(aligned)]
-        if len(valid) > 0:
-            margin = (
-                0.05 * (valid.max() - valid.min()) if valid.max() != valid.min() else 1
-            )
-            ax.set_ylim(valid.min() - margin, valid.max() + margin)
+        ax.plot(aligned, lw=1)
+        plotted.append(norad)
+
         if satellite_variable == "Distances":
             ax.set_ylim(0, R)
             ax.invert_yaxis()
         elif satellite_variable == "Elevations":
             ax.set_ylim(0, 90)
 
-    x_indices = np.linspace(0, num_timestamps - 1, min(30, num_timestamps), dtype=int)
-    x_labels = [utc_timestamps[i] for i in x_indices]
-    axes[-1].set_xticks(x_indices)
-    axes[-1].set_xticklabels(x_labels, rotation=45, ha="right")
     axes[-1].set_xlabel("Timestamp (UTC)")
 
-    if vertical_lines:
-        for t_str in vertical_lines:
-            idx = utc_to_idx.get(t_str, None)
-            if idx is not None:
-                for ax in axes:
-                    ax.axvline(idx, color="red", linestyle="--", lw=1)
+    if len(plotted) == 0:
+        print("⚠️ No satellites matched timeline → nothing plotted")
+        return
 
-    if satellite_variable == "Distances":
-        fig.text(
-            0.08, 0.3, "Distance (km)", va="center", rotation="vertical", fontsize=10
-        )
-    else:
-        fig.text(
-            0.08,
-            0.3,
-            r"Elevation ($\degree$)",
-            va="center",
-            rotation="vertical",
-            fontsize=10,
-        )
+    plt.tight_layout()
+    plt.show()
 
-    fig.suptitle(f"PSD and Satellite {satellite_variable}", fontsize=15)
-    plt.tight_layout(rect=[0, 0, 0.9, 0.96])
-    plt.show(block=True)
+    print(f"Plotted NORADs: {plotted} | Count: {len(plotted)}")
