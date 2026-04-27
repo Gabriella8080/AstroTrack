@@ -99,6 +99,30 @@ def get_frequency_bin_range(freq_min, freq_max, total_bins, full_bandwidth_mhz=2
     )
 
 
+def iso_to_hms(t):
+    """
+    Convert datetime/ISO string/timestamp from HDF5 file
+    used by REACH collaboration to 'HH:MM:SS' format.
+    """
+    if isinstance(t, str):
+        t = t.rstrip("Z")
+        if "T" in t:
+            t = t.split("T")[-1]
+        return t[:8]
+
+    if isinstance(t, datetime):
+        return t.strftime("%H:%M:%S")
+
+    raise TypeError(f"Unsupported time format: {type(t)}")
+
+
+def build_time_index_map(utc_timestamps):
+    """
+    Map UTC timeline to indices using normalised HH:MM:SS keys.
+    """
+    return {iso_to_hms(t): i for i, t in enumerate(utc_timestamps)}
+
+
 def plot_psd_with_satellite_metric(
     spectra: np.ndarray,
     utc_timestamps: list[str],
@@ -131,19 +155,15 @@ def plot_psd_with_satellite_metric(
     cmap (str): Colormap for PSD.
     """
     num_timestamps, total_bins = spectra.shape
-
     bin_start, bin_end = get_frequency_bin_range(
         freq_low_mhz, freq_high_mhz, total_bins, bandwidth
     )
     bin_start, bin_end = int(bin_start), int(bin_end)
-
     spectra_subset = spectra[:, bin_start:bin_end]
-
-    utc_to_idx = _build_time_index_map(utc_timestamps)
+    utc_to_idx = build_time_index_map(utc_timestamps)
 
     fig, (ax1, ax2) = plt.subplots(
-        2, 1, figsize=(14, 8), sharex=True,
-        gridspec_kw={"height_ratios": [4, 2]}
+        2, 1, figsize=(14, 8), sharex=True, gridspec_kw={"height_ratios": [4, 2]}
     )
 
     cax = fig.add_axes([0.92, 0.105, 0.02, 0.775])
@@ -159,22 +179,16 @@ def plot_psd_with_satellite_metric(
     )
 
     fig.colorbar(im, cax=cax, label="PSD Intensity")
-
     ax1.set_ylabel("Frequency (MHz)")
     ax1.set_title(f"PSD ({freq_low_mhz}-{freq_high_mhz} MHz)")
 
     norads = []
-
     for sat_data in satellite_data:
         if "TLE" not in sat_data:
             continue
-
         norad_id = sat_data["TLE"][1].split()[1]
-
         values = np.array(sat_data[variable])
-
-        times = [_to_hms(ep) for ep in sat_data["Epochs"]]
-
+        times = [iso_to_hms(ep) for ep in sat_data["Epochs"]]
         if threshold is not None:
             if variable == "Distances" and not np.any(values < threshold):
                 continue
@@ -182,34 +196,28 @@ def plot_psd_with_satellite_metric(
                 continue
 
         aligned = np.full(num_timestamps, np.nan)
-
         matched = 0
         for t, v in zip(times, values):
             idx = utc_to_idx.get(t)
             if idx is not None:
                 aligned[idx] = v
                 matched += 1
-
         if matched == 0:
             continue
-
         ax2.plot(np.arange(num_timestamps), aligned, lw=1, label=norad_id)
         norads.append(norad_id)
 
     if len(norads) == 0:
-        print("⚠️ No satellites matched UTC timeline. Check time alignment.")
+        print("No satellites flyovers matched HDF5 Observation UTC timeline.")
         return
 
     if variable == "Distances":
         ax2.invert_yaxis()
-
     ax2.set_ylabel(variable)
     ax2.set_xlabel("Timestamp (UTC)")
     ax2.set_title(f"Satellite {variable}")
-
     x_idx = np.linspace(0, num_timestamps - 1, min(30, num_timestamps), dtype=int)
     x_lbl = [utc_timestamps[i] for i in x_idx]
-
     ax1.set_xticks(x_idx)
     ax1.set_xticklabels(x_lbl, rotation=45, ha="right")
     ax2.set_xticks(x_idx)
@@ -217,7 +225,7 @@ def plot_psd_with_satellite_metric(
 
     if vertical_lines:
         for t in vertical_lines:
-            idx = utc_to_idx.get(_to_hms(t))
+            idx = utc_to_idx.get(iso_to_hms(t))
             if idx is not None:
                 ax1.axvline(idx, color="red", ls="--", lw=1)
                 ax2.axvline(idx, color="red", ls="--", lw=1)
@@ -232,8 +240,6 @@ def plot_psd_with_satellite_metric(
 
     plt.tight_layout(rect=[0, 0, 0.9, 0.95])
     plt.show()
-
-    print(f"Plotted NORADs: {norads} | Count: {len(norads)}")
 
 
 def plot_psd_satellite_time_series(
@@ -274,45 +280,37 @@ def plot_psd_satellite_time_series(
         vertical_lines (list[str]): UTC times to draw vertical dashed lines.
     """
     num_timestamps, total_bins = spectra.shape
-
-    utc_to_idx = _build_time_index_map(utc_timestamps)
-
+    utc_to_idx = build_time_index_map(utc_timestamps)
     if psd_freq_ranges is None:
         psd_freq_ranges = [(0, bandwidth)]
 
     if norad_list is None:
         norad_list = [
-            sat["TLE"][1].split()[1]
-            for sat in satellite_data
-            if "TLE" in sat
+            sat["TLE"][1].split()[1] for sat in satellite_data if "TLE" in sat
         ]
 
     if len(norad_list) == 0:
-        print("⚠️ No NORAD list available.")
+        print("No NORAD list made available.")
         return
 
     num_psd = len(psd_freq_ranges)
     num_sat = len(norad_list)
-
     fig, axes = plt.subplots(
         1 + num_psd + num_sat,
         1,
         figsize=(14, 4 + 1.1 * (num_psd + num_sat)),
         sharex=True,
     )
-
     axes = np.atleast_1d(axes)
 
-    # --- PSD PANELS ---
+    # PSD panel(s)
     for i, (low, high) in enumerate(psd_freq_ranges):
         ax = axes[1 + i]
-
-        s = int(round(low / bandwidth * total_bins))
-        e = int(round(high / bandwidth * total_bins))
-        e = min(e, total_bins - 1)
-
+        lower = int(round(low / bandwidth * total_bins))
+        upper = int(round(high / bandwidth * total_bins))
+        upper = min(upper, total_bins - 1)
         im = ax.imshow(
-            spectra[:, s:e].T,
+            spectra[:, lower:upper].T,
             aspect="auto",
             origin="lower",
             cmap=cmap,
@@ -322,15 +320,9 @@ def plot_psd_satellite_time_series(
 
         ax.set_ylabel("Freq (MHz)")
 
-    sat_dict = {
-        sat["TLE"][1].split()[1]: sat
-        for sat in satellite_data
-        if "TLE" in sat
-    }
-
+    # Satellite panel(s)
+    sat_dict = {sat["TLE"][1].split()[1]: sat for sat in satellite_data if "TLE" in sat}
     plotted = []
-
-    # --- SATELLITES ---
     for i, norad in enumerate(norad_list):
         ax = axes[1 + num_psd + i]
 
@@ -339,12 +331,9 @@ def plot_psd_satellite_time_series(
             continue
 
         sat = sat_dict[norad]
-
         values = np.array(sat[satellite_variable])
-        times = [_to_hms(ep) for ep in sat["Epochs"]]
-
+        times = [iso_to_hms(ep) for ep in sat["Epochs"]]
         aligned = np.full(num_timestamps, np.nan)
-
         matched = 0
         for t, v in zip(times, values):
             idx = utc_to_idx.get(t)
@@ -357,7 +346,6 @@ def plot_psd_satellite_time_series(
 
         ax.plot(aligned, lw=1)
         plotted.append(norad)
-
         if satellite_variable == "Distances":
             ax.set_ylim(0, R)
             ax.invert_yaxis()
@@ -367,10 +355,9 @@ def plot_psd_satellite_time_series(
     axes[-1].set_xlabel("Timestamp (UTC)")
 
     if len(plotted) == 0:
-        print("⚠️ No satellites matched timeline → nothing plotted")
+        print("No satellites flyovers matched HDF5 Observation UTC timeline.")
         return
 
     plt.tight_layout()
     plt.show()
 
-    print(f"Plotted NORADs: {plotted} | Count: {len(plotted)}")
