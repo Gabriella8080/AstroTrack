@@ -28,9 +28,13 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.0",
+    "pytest",
     "build>=1.0",
     "twine>=6.0",
     "black",
     "ruff"
 ]
+
+[tool.black]
+target-version = ["py312"]
+line-length = 88
