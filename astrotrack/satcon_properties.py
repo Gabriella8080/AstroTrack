@@ -29,7 +29,8 @@ def filter_by_norads(data, min_id=None, max_id=None, exact_id=None):
 
     for sat in data:
         try:
-            norad = int(sat["TLE"][1].split()[1])
+            norad_str = sat["TLE"][1].split()[1]
+            norad = int(norad_str.rstrip("U"))
         except Exception:
             continue
         if exact_id is not None:
@@ -159,7 +160,7 @@ def plot_satellite_trajectory(
         ax.set_zlabel("z (km)")
         ax.view_init(elev, azim)
         ax.set_title(
-            f"Satellite Trajectories:\n(elev={elev}$\degree$, azim={azim}$\degree$)"
+            rf"Satellite Trajectories:\n(elev={elev}$\degree$, azim={azim}$\degree$)"
         )
 
         plt.show(block=True)
@@ -204,6 +205,10 @@ def plot_flyover_histogram_by_norad(
                 if dt > gap_hours:
                     pass_count += 1
             passes_per_norad[norad_id] += pass_count
+
+        if len(passes_per_norad) == 0:
+            print("No valid satellite passes found.")
+            return passes_per_norad
 
         ids = np.array(list(passes_per_norad.keys()))
         vals = np.array(list(passes_per_norad.values()))
@@ -258,8 +263,8 @@ def plot_satellite_metric(
         color_cycle = plt.rcParams["axes.prop_cycle"].by_key()["color"]
 
         ylabel_map = {
-            "Elevations": "Elevation ($\degree$)",
-            "Azimuths": "Azimuth ($\degree$)",
+            "Elevations": r"Elevation ($\degree$)",
+            "Azimuths": r"Azimuth ($\degree$)",
             "Distances": "Distance from Observer (km)",
             "Velocities": "Line-of-sight Velocity (km/s)",
         }
@@ -381,7 +386,7 @@ def plot_max_elevation_histogram(
 
         plt.xticks(bins)
         plt.xlim(0, 90)
-        plt.xlabel(f"Maximum Elevation Angle ($\degree$)")
+        plt.xlabel(r"Maximum Elevation Angle ($\degree$)")
         plt.ylabel("Number of Satellites")
         plt.title(
             f"Distribution of Maximum Elevation Angles ({len(all_satellite_data_list)} satellites)"
