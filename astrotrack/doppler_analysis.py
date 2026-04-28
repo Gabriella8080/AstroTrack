@@ -38,8 +38,8 @@ def plot_doppler_shifts(
         norad_id = tle_line_2.split()[1]
         theta_max = max(elevations)
         epochs_np = np.array([np.datetime64(e) for e in epochs])
-        center_time = epochs_np[len(epochs_np)//2]
-        relative_time = (epochs_np - center_time)/np.timedelta64(1, "m")  # mins
+        center_time = epochs_np[len(epochs_np) // 2]
+        relative_time = (epochs_np - center_time) / np.timedelta64(1, "m")  # mins
         doppler_shift = (velocity_r / c) * f0
 
         plt.scatter(

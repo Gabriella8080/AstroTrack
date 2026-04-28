@@ -7,7 +7,8 @@ from astrotrack.psd_analysis import (
     freq_index,
     get_frequency_bin_range,
     iso_to_hms,
-    build_time_index_map)
+    build_time_index_map,
+)
 
 
 def mock_satellite(norad="12345"):
@@ -49,7 +50,9 @@ def test_freq_index(bin_idx, total_bins, bandwidth, expected):
 
 
 def test_get_frequency_bin_range():
-    start, end = get_frequency_bin_range(40, 100, total_bins=100, full_bandwidth_mhz=200)
+    start, end = get_frequency_bin_range(
+        40, 100, total_bins=100, full_bandwidth_mhz=200
+    )
     assert start < end
 
 

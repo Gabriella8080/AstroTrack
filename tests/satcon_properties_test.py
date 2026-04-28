@@ -1,6 +1,7 @@
 import pytest
 from datetime import datetime
 import matplotlib
+
 matplotlib.use("Agg")
 from astrotrack.satcon_properties import (
     get_norads,
@@ -10,8 +11,9 @@ from astrotrack.satcon_properties import (
     filter_custom,
     plot_satellite_metric,
     plot_max_elevation_histogram,
-    plot_flyover_histogram_by_norad
+    plot_flyover_histogram_by_norad,
 )
+
 
 @pytest.fixture
 def sample_data():
@@ -40,6 +42,7 @@ def test_get_norads(sample_data):
     result = get_norads(sample_data)
     assert result == ["12345U", "23456U", "34567U"]
 
+
 @pytest.mark.parametrize(
     "min_id,max_id,exact_id,expected",
     [
@@ -49,8 +52,6 @@ def test_get_norads(sample_data):
         (None, None, 23456, 1),
     ],
 )
-
-
 def test_filter_by_norads(sample_data, min_id, max_id, exact_id, expected):
     result = filter_by_norads(
         sample_data,
@@ -60,6 +61,7 @@ def test_filter_by_norads(sample_data, min_id, max_id, exact_id, expected):
     )
     assert len(result) == expected
 
+
 def test_filter_by_time(sample_data):
     start = datetime(2025, 6, 12, 21, 30)
     end = datetime(2025, 6, 12, 21, 50)
@@ -67,6 +69,7 @@ def test_filter_by_time(sample_data):
     result = filter_by_time(sample_data, start, end)
 
     assert len(result) == 1
+
 
 @pytest.mark.parametrize(
     "step,offset,expected_ids",
@@ -76,8 +79,6 @@ def test_filter_by_time(sample_data):
         (1, 0, ["12345U", "23456U", "34567U"]),
     ],
 )
-
-
 def test_filter_nth(sample_data, step, offset, expected_ids):
     result = filter_nth(sample_data, step=step, offset=offset)
     ids = [sat["TLE"][1].split()[1] for sat in result]
@@ -86,8 +87,7 @@ def test_filter_nth(sample_data, step, offset, expected_ids):
 
 def test_filter_custom(sample_data):
     result = filter_custom(
-        sample_data,
-        lambda sat: sat.get("Elevations") and max(sat["Elevations"]) > 20
+        sample_data, lambda sat: sat.get("Elevations") and max(sat["Elevations"]) > 20
     )
     assert len(result) == 1
 

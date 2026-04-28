@@ -309,7 +309,9 @@ def plot_psd_satellite_time_series(
         bottom=0.5,
     )
     ax_time = fig.add_subplot(top_panel[0])
-    ax_psd_list = [fig.add_subplot(top_panel[i + 1], sharex=ax_time) for i in range(n_psd)]
+    ax_psd_list = [
+        fig.add_subplot(top_panel[i + 1], sharex=ax_time) for i in range(n_psd)
+    ]
 
     # Bottom Panel(s): Satellite Variable
     bottom_panel = fig.add_gridspec(
@@ -363,10 +365,7 @@ def plot_psd_satellite_time_series(
     cax = fig.add_axes([0.92, 0.55, 0.02, 0.3])
     fig.colorbar(im, cax=cax, label="PSD Intensity")
 
-    sat_dict = {
-        sat["TLE"][1].split()[1]: sat
-        for sat in satellite_data if "TLE" in sat
-    }
+    sat_dict = {sat["TLE"][1].split()[1]: sat for sat in satellite_data if "TLE" in sat}
 
     plotted = []
     for ax, norad in zip(axes_sat, norad_list):
