@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import cm
 from skyfield.api import EarthSatellite, load
 from astropy.coordinates import EarthLocation
 from astropy import units as u

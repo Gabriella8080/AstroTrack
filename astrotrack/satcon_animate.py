@@ -1,5 +1,5 @@
 from skyfield.api import EarthSatellite, load
-from matplotlib.animation import FuncAnimation, PillowWriter
+from matplotlib.animation import PillowWriter
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -145,14 +145,6 @@ def animate_trajectories(
         loc="best",
         fontsize="small",
         ncol=2,
-    )
-    ani = FuncAnimation(
-        fig,
-        update_frame,
-        frames=len(timestamps),
-        fargs=(trajectories, plots, timestamps, timestamp_text),
-        interval=100,
-        blit=False,
     )
 
     os.makedirs(output_dir, exist_ok=True)

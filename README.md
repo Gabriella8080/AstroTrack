@@ -21,14 +21,14 @@ Installation
 AstroTrack can be installed from PyPI:
 
 ```bash
-    pip install astrotrack
+pip install astrotrack
 ```
 To alternatively install from source:
 
 ```bash
-    git clone https://github.com/Gabriella8080/AstroTrack.git
-    cd astrotrack
-    pip install -e ".[dev]"
+git clone https://github.com/Gabriella8080/AstroTrack.git
+cd astrotrack
+pip install -e ".[dev]"
 ```
 ---
 
