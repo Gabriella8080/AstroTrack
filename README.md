@@ -1,6 +1,4 @@
-![CI](https://github.com/Gabriella8080/AstroTrack/actions/workflows/CI.yml/badge.svg)
-
-![License](https://img.shields.io/badge/license-BSD--3-blue)
+![CI](https://github.com/Gabriella8080/AstroTrack/actions/workflows/CI.yml/badge.svg) ![License](https://img.shields.io/badge/license-BSD--3-blue)
 
 AstroTrack
 ===========
