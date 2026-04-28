@@ -141,13 +141,13 @@ def plot_satellite_trajectory(
             ref_labels = []
             sat_handles = []
             sat_labels = []
-            for h, l in zip(handles, labels):
-                if "sat" in l.lower() or l.isdigit():
-                    sat_handles.append(h)
-                    sat_labels.append(l)
+            for handle, label in zip(handles, labels):
+                if "sat" in label.lower() or label.isdigit():
+                    sat_handles.append(handle)
+                    sat_labels.append(label)
                 else:
-                    ref_handles.append(h)
-                    ref_labels.append(l)
+                    ref_handles.append(handle)
+                    ref_labels.append(label)
             remaining = max_items - len(ref_handles)
             final_handles = ref_handles + sat_handles[:remaining]
             final_labels = ref_labels + sat_labels[:remaining]
