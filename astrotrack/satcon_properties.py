@@ -320,7 +320,7 @@ def plot_satellite_metric(
             )
 
         plt.xlabel("Timestamp (UTC)")
-        plt.ylabel(ylabel_map.get(variable, variable))  # ✅ improved label
+        plt.ylabel(ylabel_map.get(variable, variable))
         plt.title(f"{variable} vs Time for Selected Satellites")
         plt.grid(alpha=0.3)
 
