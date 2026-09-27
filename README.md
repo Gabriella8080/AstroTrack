@@ -11,7 +11,7 @@ AstroTrack
 </div>
 <br>
 
----
+
 
 Installation
 ------------
@@ -28,7 +28,11 @@ git clone https://github.com/Gabriella8080/AstroTrack.git
 cd astrotrack
 pip install -e ".[dev]"
 ```
----
+
+
+Data
+----------
+To model the LEO satellite environment during this observation, we utilise a catalogue compiled into a plaintext file and downloaded from Space-Track at 17:10:37 UTC 14 June 2025, containing orbital information for 12,270 LEO satellites.
 
 Modules Overview
 ----------
@@ -48,7 +52,6 @@ Modules Overview
 
 We provide a brief overview of all five modules, their key functions, and example usage [here](docs/examples/examples.md).
 
----
 
 Quick Start
 ----------
@@ -87,7 +90,7 @@ data = load_satellite_data(
 >```
 >
 
----
+
 
 Example Workflow:
 ----------
