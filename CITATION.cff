@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+title: 'astrotrack: Characterising LEO Satellite Interference in Wide-Field Radio Astronomy'
+message: 'If you use astrotrack or its methods in your research, please cite the accompanying paper.'
+type: software
+authors:
+  - family-names: Rajpoot
+    given-names: Gabriella
+repository-code: 'https://github.com/Gabriella8080/AstroTrack'
+license: BSD-3-Clause
+version: 0.1.0
+keywords:
+  - Low Earth orbit satellites
+  - radio frequency interference
+  - radio astronomy
+  - satellite interference
+  - orbit determination
+  - wide-field astronomy
