@@ -1,7 +1,6 @@
-Example Usage of Modules
-===========
+# Example Usage of Modules
 
-**1. Preprocessing and Loading Satellite Data (`preprocess`)**
+## Preprocessing and Loading Satellite Data (`preprocess`)
 
 This module handles the initial preparation of the satellite orbital data. It parses TLE catalogues from a plaintext document, applies filtering, and generates a structured dataset for later analysis. 
 
@@ -35,9 +34,9 @@ data = load_satellite_data(
 |`R` | Radial constraint in km (distance from observer to include satellites). |
 |`horizon_data` | Optional CSV file or list defining the local horizon as azimuth-elevation pairs. Use `baseline_horizon.csv` for default baseline flat horizon. |
 |`satcon` | LEO satellite constellation name as string (e.g. `'OneWeb'`, `'STARLINK'`). |
----
 
-**2. Satellite Filtering & Properties (`satcon_properties`)**
+
+## Satellite Filtering & Properties (`satcon_properties`)
 
 This module enables the selection and visualiation of satellite datasets. Users can generate subsets of satellite populations in order to explore their collective metrics, analysing their individual trajectory properties, and visualise their orbital paths. 
 
@@ -111,9 +110,9 @@ plot_max_elevation_histogram(
 
 Other thresholds or filtering parameters are also present where applicable.
 
----
 
-**3. Doppler Analysis (`doppler_analysis`)**
+
+## Doppler Analysis (`doppler_analysis`)
 
 This module computes and plots the Doppler shifts of satellites at given emission frequencies provided by the user, with respect to their observational ground-site. This assesses the detectability limits of a satellite's potential IEMR/UEMR, and visualises the evolution of flyovers.
 
@@ -151,9 +150,9 @@ check_doppler_resolution(
 |`resolution` | Frequency resolution of experiment in Hertz. |
 |`time_window` | Half-width of visibility time over experiment in minutes. |
 |`marker_color` | Optional plotting parameter. |
----
 
-**4. Trajectory Animations (`satcon_animate`)**
+
+## Trajectory Animations (`satcon_animate`)
 
 This module creates three-dimensional animations of satellite flyovers projected on an Earth model, visualising it's orbital evolution with optional reference markers for ground-based locations of interest.
 
@@ -181,9 +180,9 @@ animate_trajectories(
 |`duration_hours` | Duration of satellite propagation in animation in hours. |
 |`step_seconds` | Time step between animation frames in seconds. |
 |`start_time` | Datetime object defining start of animation. |
----
 
-**5. Spectral Analysis with Satellite Metrics (`psd_analysis`)**
+
+## Spectral Analysis with Satellite Metrics (`psd_analysis`)
 
 This module allows for the cross-correlation of radio spectra with satellite positions and other metrics, allowing for temporal relationships between RFI and the occurence of a satellite flyover.
 
