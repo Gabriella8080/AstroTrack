@@ -1,4 +1,4 @@
-name: AstroTrack CI
+name: astrotrack-tests
 
 on:
   push:
