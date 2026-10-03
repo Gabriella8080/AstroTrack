@@ -1,12 +1,12 @@
 # astrotrack: Characterising LEO Satellite RFI in Wide-Field Radio Astronomy
 
-![CI](https://github.com/Gabriella8080/AstroTrack/actions/workflows/CI.yml/badge.svg) ![License](https://img.shields.io/badge/license-BSD--3-blue)
+![CI](https://github.com/Gabriella8080/astrotrack/actions/workflows/CI.yml/badge.svg) ![License](https://img.shields.io/badge/license-BSD--3-blue)
 
 ## Overview
 
 `astrotrack` is an open source Python package for characterising potential Low Earth Orbit (LEO) satellite interference in wide-field radio astronomy observations. While interferometric arrays are able to spatially localise LEO satellite radiation, wide-beam radiometers like REACH (de Lera Acedo et al. 2022) integrate the total sky power into a frequency spectrum and therefore lack equivalent strategies for identifying satellite-generated contamination. To address this limitation, `astrotrack` provides tools for combining Two-Line Element (TLE) data with site-specific observational constraints to identify LEO satellite flyovers and investigate their potential association with radio frequency interference (RFI).
 
-> **Accompanying Paper**: *'AstroTrack: Characterising LEO Satellite Interference in Wide-Field Radio Astronomy'*, in preparation.
+> **Accompanying Paper**: *'astrotrack: Characterising LEO Satellite Interference in Wide-Field Radio Astronomy'*, in preparation.
 
 <br>
 <div align="center">
