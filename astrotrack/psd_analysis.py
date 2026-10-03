@@ -15,14 +15,20 @@ def load_hdf5(
     Load observation HDF5 file to return spectra and UTC timestamps.
 
     Parameters:
-        file_path (str): Path to the user's HDF5 file.
-        spectra_key (str): Dataset name for spectra.
-        timestamps_key (str): Dataset name for timestamps.
+    ----------
+    file_path : str
+        Path to the user's HDF5 file.
+    spectra_key : str
+        Dataset name for spectra.
+    timestamps_key : str
+        Dataset name for timestamps.
 
     Outputs:
-        spectra (np.ndarray): 2D array of PSD measurements
-                            (time x frequency bins)
-        utc_timestamps (list[str]): List of 'HH:MM:SS' formatted UTC timestamps
+    -------
+    np.ndarray
+        2D array of PSD measurements (time x frequency bins)
+    list[str]
+        List of 'HH:MM:SS' formatted UTC timestamps
     """
     try:
         with h5py.File(file_path, "r") as f:
@@ -51,30 +57,44 @@ def load_hdf5(
 
 
 def hdf5_index(freq_mhz, total_bins, full_bandwidth_mhz=200):
-    """Convert frequency (MHz) to bin index for spectral data.
+    """
+    Convert frequency (MHz) to bin index for spectral data.
 
     Parameters:
-        freq_mhz (float): Single frequency [MHz].
-        total_bins (int): Total number of bins in spectral dataset.
-        full_bandwidth_mhz (float): Total bandwidth of spectrum [MHz].
+    ----------
+    freq_mhz : float
+        Single frequency [MHz].
+    total_bins : int
+        Total number of bins in spectral dataset.
+    full_bandwidth_mhz : float
+        Total bandwidth of spectrum [MHz].
 
     Output:
-        (int): Corresponding bin index.
+    ------
+    int
+        Corresponding bin index.
     """
     bin_idx = int(round(freq_mhz / (full_bandwidth_mhz / total_bins)))
     return max(0, min(bin_idx, total_bins - 1))
 
 
 def freq_index(bin_idx, total_bins, full_bandwidth_mhz=200):
-    """Convert bin index to true frequency (MHz) of spectral data.
+    """
+    Convert bin index to true frequency (MHz) of spectral data.
 
     Parameters:
-        bin_idx (int): Bin index to convert.
-        total_bins (int): Total number of bins in spectral dataset.
-        full_bandwidth_mhz (float): Total bandwidth of spectrum [MHz].
+    ----------
+    bin_idx : int
+        Bin index to convert.
+    total_bins : int
+        Total number of bins in spectral dataset.
+    full_bandwidth_mhz : float
+        Total bandwidth of spectrum [MHz].
 
     Output:
-        (float): Frequency corresponding to bin index [MHz].
+    -----
+    float
+        Frequency corresponding to bin index [MHz].
     """
     return bin_idx * (full_bandwidth_mhz / total_bins)
 
@@ -84,13 +104,20 @@ def get_frequency_bin_range(freq_min, freq_max, total_bins, full_bandwidth_mhz=2
     Compute start and end bin indices for specified frequency range.
 
     Parameters:
-        freq_min (float): Minimum frequency of range [MHz].
-        freq_max (float): Maximum frequency of range [MHz].
-        total_bins (int): Total number of bins in spectral dataset.
-        full_bandwidth_mhz (float): Total bandwidth of spectrum [MHz].
+    ----------
+    freq_min : float
+        Minimum frequency of range [MHz].
+    freq_max : float
+        Maximum frequency of range [MHz].
+    total_bins : int
+        Total number of bins in spectral dataset.
+    full_bandwidth_mhz : float
+        Total bandwidth of spectrum [MHz].
 
     Output:
-        (tuple[int]): Start and end bin index corresponding
+    ------
+    tuple[int]
+        Start and end bin index corresponding
         to freq_min and freq_max.
     """
     return (
@@ -142,17 +169,27 @@ def plot_psd_with_satellite_metric(
     Plot PSD waterfall and chosen satellite variable aligned by time.
 
     Parameters:
-    spectra (2D np.ndarray): PSD measurements (time x frequency bins).
-    utc_timestamps (list[str]): 'HH:MM:SS' formatted
-                                timestamps matching spectra.
-    satellite_data (list of dict): Preprocessed satellite data.
-    variable (str): Satellite variable to plot ('Elevations', 'Distances').
-    freq_low_mhz, freq_high_mhz (float): Frequency range to plot [MHz].
-    v_min, v_max (float): Color scale for PSD.
-    show_legend (bool): Display NORAD IDs in plot.
-    threshold (float): Filter satellites by variable threshold.
-    vertical_lines (list of str): Timestamp lines to mark.
-    cmap (str): Colormap for PSD.
+    ----------
+    spectra : 2D np.ndarray
+        PSD measurements (time x frequency bins).
+    utc_timestamps : list[str]
+        'HH:MM:SS' formatted timestamps matching spectra.
+    satellite_data : list of dict
+        Preprocessed satellite data.
+    variable : str
+        Satellite variable to plot ('Elevations', 'Distances').
+    freq_low_mhz, freq_high_mhz : float
+        Frequency range to plot [MHz].
+    v_min, v_max : float
+        Color scale for PSD.
+    show_legend : bool
+        Display NORAD IDs in plot.
+    threshold : float
+        Filter satellites by variable threshold.
+    vertical_lines : list[str]
+        Timestamp lines to mark.
+    cmap : str
+        Colormap for PSD.
     """
     num_timestamps, total_bins = spectra.shape
     bin_start, bin_end = get_frequency_bin_range(
@@ -264,20 +301,35 @@ def plot_psd_satellite_time_series(
     time-series, and chosen satellite variable (Elevations, Distances, etc.) aligned by time.
 
     Parameters:
-        spectra (np.ndarray): 2D array (time x frequency bins) of PSD measurements.
-        utc_timestamps (list[str]): Time strings in 'HH:MM:SS' format.
-        satellite_data (list[dict]): Preprocessed satellite data.
-        norad_list (list[str]): List of NORAD IDs for satellite panels, if provided.
-        satellite_variable (str): Satellite variable to plot ('Elevations' or 'Distances').
-        R (float): Radial constraint [km].
-        psd_freq_ranges (list of tuples): [(low1, high1), (low2, high2), ...]; if None, full range used [MHz].
-        target_freqs_mhz (list of floats): Frequencies to plot as narrowband time-series; if None, skip [MHz].
-        bandwidth (int): Frequency bandwidth of spectral dataset [MHz].
-        vmin, vmax (float): Color scale limits for PSD.
-        cmap (str): Colormap for PSD.
-        line_colors (list of str): Colors for narrowband time-series,
-        threshold (float): Optional threshold to hide satellites.
-        vertical_lines (list[str]): UTC times to draw vertical dashed lines.
+    ----------
+    spectra : np.ndarray
+        2D array (time x frequency bins) of PSD measurements.
+    utc_timestamps : list[str]
+        Time strings in 'HH:MM:SS' format.
+    satellite_data : list[dict]
+        Preprocessed satellite data.
+    norad_list : list[str]
+        List of NORAD IDs for satellite panels, if provided.
+    satellite_variable : str
+        Satellite variable to plot ('Elevations' or 'Distances').
+    R : float
+        Radial constraint [km].
+    psd_freq_ranges : list of tuples
+        [(low1, high1), (low2, high2), ...]; if None, full range used [MHz].
+    target_freqs_mhz :list of floats
+        Frequencies to plot as narrowband time-series; if None, skip [MHz].
+    bandwidth : int
+        Frequency bandwidth of spectral dataset [MHz].
+    vmin, vmax : float
+        Color scale limits for PSD.
+    cmap : str
+        Colormap for PSD.
+    line_colors : list of str
+        Colors for narrowband time-series,
+    threshold : float
+        Optional threshold to hide satellites.
+    vertical_lines : list[str]
+        UTC times to draw vertical dashed lines.
     """
     num_timestamps, total_bins = spectra.shape
     utc_to_idx = build_time_index_map(utc_timestamps)

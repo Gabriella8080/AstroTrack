@@ -18,15 +18,21 @@ ts = load.timescale()
 
 
 def parse_tle_file(tle_file: str, satcon_name: str = None):
-    """Parse a TLE file and return a list of (line1, line2) tuples,
+    """
+    Parse a TLE file and return a list of (line1, line2) tuples,
     supporting 3LEs, TLEs, mixed formats, or single TLE entries.
 
     Parameters:
-        tle_file (str): Path to TLE text file
-        satcon_name (str, optional): Optional constellation name to filter for
+    ----------
+    tle_file : str
+        Path to TLE text file
+    satcon_name : str
+        Optional constellation name to filter for
 
     Output:
-        list[tuple[str, str]]: Parsed TLE pairs ready for processing
+    ------
+    list[tuple[str, str]]
+        Parsed TLE pairs ready for processing
     """
     with open(tle_file, "r") as f:
         lines = [line.strip() for line in f if line.strip()]
@@ -60,14 +66,20 @@ def parse_tle_file(tle_file: str, satcon_name: str = None):
 
 
 def filter_tles_by_date(satcon_tles, target_date):
-    """Filter TLEs within plus/mins 2 weeks of target_date.
+    """
+    Filter TLEs within plus/mins 2 weeks of target_date.
 
     Parameters:
-         satcon_tles (list[tuple]): List of (line1, line2) TLE strings
-         target_date (datetime): Observation date
+    ----------
+    satcon_tles : list[tuple])
+        List of (line1, line2) TLE strings
+    target_date : datetime)
+        Observation date
 
     Output:
-         list[tuple]: Filtered TLEs valid within p/m 2 weeks of target_date
+    ------
+    list[tuple]
+        Filtered TLEs valid within p/m 2 weeks of target_date
     """
     start_date = target_date - timedelta(weeks=2)
     end_date = target_date + timedelta(weeks=2)
@@ -81,17 +93,24 @@ def filter_tles_by_date(satcon_tles, target_date):
 
 
 def compute_sat_properties(sat, location, epoch):
-    """Calculates properties of satellite trajectory
+    """
+    Calculates properties of satellite trajectory
     relative to observer at epoch.
 
     Parameters:
-         sat (EarthSatellite): Skyfield satellite object
-         location (EarthLocation): Observers ITRS position
-         epoch (Time): Skyfield observation time
+    ----------
+    sat : EarthSatellite
+        Skyfield satellite object
+    location : EarthLocation
+        Observers ITRS position
+    epoch : Time
+        Skyfield observation time
 
     Outputs:
-         tuple: azimuth [deg], elevation [deg], distance of
-         satellite w.r.t observer [km], line-of-sight velocity [km/s]
+    -------
+    tuple
+        azimuth [deg], elevation [deg], distance of
+        satellite w.r.t observer [km], line-of-sight velocity [km/s]
     """
     sat_at_epoch = sat.at(epoch)
     sat_xyz = sat_at_epoch.position.km
@@ -114,16 +133,20 @@ def compute_sat_properties(sat, location, epoch):
 
 
 def load_horizon_profile(data):
-    """Loads horizon profile at observer's location from .csv file or lists.
+    """
+    Loads horizon profile at observer's location from .csv file or lists.
 
     Parameters:
-         Either:
-             - Path to .csv file (azimuth, elevation columns)
-             - Tuple of two lists (azimuths, elevations)
+    ----------
+    data : tuple
+        Path to .csv file (azimuth, elevation columns), or
+        tuple of two lists (azimuths, elevations)
 
     Outputs:
-         tuple[np.ndarray, np.ndarray]: Arrays of azimuthal [deg]
-         and corresponding elevation [deg] angles
+    -------
+    tuple[np.ndarray, np.ndarray]
+        Arrays of azimuthal [deg] and corresponding
+        elevation [deg] angles
     """
     if isinstance(data, tuple):
         return np.array(data[0]), np.array(data[1])
@@ -154,23 +177,35 @@ def find_target_sats(
     obs_height=0,
     start_index=0,
 ):
-    """Compute satellites visible above horizon
+    """
+    Compute satellites visible above horizon
     within radial constraint at given epochs.
 
     Parameters:
-         filtered_tles (list[tuple]): Filtered TLEs
-         epochs (Skyfield): Array of observation times
-         obs_lat (float): Observer latitude [deg]
-         obs_lon (float): Observer longitude [deg]
-         azi_list (list): Horizon azimuths [deg]
-         prof_list (list): Corresponding Horizon elevations [deg]
-         R (float): Radial constraint [km]
-         obs_height (float): Observer height [km]
-         start_index (int): Starting index of satellite numbering
+    ----------
+    filtered_tles : list[tuple]
+        Filtered TLEs
+    epochs : Skyfield
+        Array of observation times
+    obs_lat : float
+        Observer latitude [deg]
+    obs_lon : float
+        Observer longitude [deg]
+    azi_list : list
+        Horizon azimuths [deg]
+    prof_list : list
+        Corresponding Horizon elevations [deg]
+    R : float
+        Radial constraint [km]
+    obs_height : float
+        Observer height [km]
+    start_index : int
+        Starting index of satellite numbering
 
     Output:
-         list [dict]: Satellite dictionary with TLEs and
-         flyover trajectory properties
+    list [dict]
+        Satellite dictionary with TLEs and
+        flyover trajectory properties
     """
     sat_data_list = []
     obs_loc = EarthLocation.from_geodetic(obs_lon, obs_lat, height=obs_height * u.m)
@@ -230,23 +265,36 @@ def load_satellite_data(
     satcon: str = None,
     start_index=0,
 ):
-    """Main pipeline for processing data about chosen satellite constellation.
+    """
+    Main pipeline for processing data about chosen satellite constellation.
 
     Parameters:
-         tle_file (str): Path to TLE plaintext file
-         target_date (datetime): Observation start date
-         obs_len (float): Length of observation [seconds]
-         traj_res (float): Resolution of trajectory samples [seconds]
-         obs_lat (float): Observer latitude [deg]
-         obs_lon (float): Observer longitude [deg]
-         R (float): Radial constraint [km]
-         horizon_data: Horizon profile of observer
-         satcon (str): Satellite constellation name
-         start_index (int): Starting satellite index, default = 0
+    ----------
+    tle_file : str
+        Path to TLE plaintext file
+    target_date : datetime
+        Observation start date
+    obs_len : float
+        Length of observation [seconds]
+    traj_res : float
+        Resolution of trajectory samples [seconds]
+    obs_lat : float
+        Observer latitude [deg]
+    obs_lon : float
+        Observer longitude [deg]
+    R : float
+        Radial constraint [km]
+    horizon_data : tuple
+        Horizon profile of observer
+    satcon : str
+        Satellite constellation name
+    start_index : int
+        Starting satellite index, default = 0
 
     Output:
-         list[dict]: List of satellite flyover data
-
+    ------
+    list[dict]
+        List of satellite flyover data
     """
     satcon_name = satcon.upper() if satcon else None
     satcon_tles = parse_tle_file(tle_file, satcon_name)

@@ -19,10 +19,15 @@ def filter_by_norads(data, min_id=None, max_id=None, exact_id=None):
     Return subset of satellites filtered by NORAD ID.
 
     Parameters:
-        data (list): List of satellite dictionaries.
-        min_id (int, optional): Minimum NORAD ID (inclusive).
-        max_id (int, optional): Maximum NORAD ID (inclusive).
-        exact_id (int, optional): One specific NORAD ID exactly.
+    ----------
+    data : list
+        List of satellite dictionaries.
+    min_id : int
+        Minimum NORAD ID (inclusive).
+    max_id : int
+        Maximum NORAD ID (inclusive).
+    exact_id : int
+        One specific NORAD ID exactly.
     """
     subset = []
 
@@ -85,13 +90,21 @@ def plot_satellite_trajectory(
     Plot 3-D satellite trajectories projected around Earth model.
 
     Parameters:
-        all_satellite_data (list[dict]): List of satellite data dictionaries (output of preprocess module).
-        elev, azim (float): Elevation and azimuth angles for user 3-D view.
-        time (list): Skyfield epoch times to compute positions for.
-        ref_points (list[tuple[str, float, float]]): None, optional list of (label, lat, lon) reference locations on Earth.
-        show_legend (bool): Showing legend.
-        figsize (tuple): Matplotlib figure size.
-        font_family (str): Font family for plot text.
+    ----------
+    all_satellite_data : list[dict]
+        List of satellite data dictionaries (output of preprocess module).
+    elev, azim : float
+        Elevation and azimuth angles for user 3-D view.
+    time : list
+        Skyfield epoch times to compute positions for.
+    ref_points : list[tuple[str, float, float]]
+        None, optional list of (label, lat, lon) reference locations on Earth.
+    show_legend : bool
+        Showing legend.
+    figsize : tuple
+        Matplotlib figure size.
+    font_family : str
+        Font family for plot text.
     """
     with plt.rc_context({"font.family": font_family}):
         re = 6378.0
@@ -247,12 +260,19 @@ def plot_satellite_metric(
     Plot time-varying variable (Elevation, Distance, etc.) for all satellite trajectories.
 
     Parameters:
-        all_satellite_data (list[dict]): List of satellite data dictionaries.
-        variable (str): The dictionary key to plot ("Elevations", "Distances").
-        threshold (float or None): Optional threshold.
-        invert(bool): Invert y-axis (for elevation).
-        font_family (str): Font family for plot text.
-        figsize (tuple): Figure size for matplotlib.
+    ----------
+    all_satellite_data : list[dict]
+        List of satellite data dictionaries.
+    variable : str
+        The dictionary key to plot ("Elevations", "Distances").
+    threshold : float or None
+        Optional threshold.
+    invert : bool
+        Invert y-axis (for elevation).
+    font_family : str
+        Font family for plot text.
+    figsize : tuple
+        Figure size for matplotlib.
     """
     with plt.rc_context({"font.family": font_family}):
         plt.figure(figsize=figsize)
@@ -354,11 +374,17 @@ def plot_max_elevation_histogram(
     Plot a histogram of maximum elevation angles from all satellites.
 
     Parameters:
-        all_satellite_data_list (list): List of satellite dictionaries, each containing 'Elevations'.
-        font_family (str): Font family for plot text.
-        figsize (tuple): Figure size for matplotlib.
-        color (str): Bar fill color.
-        edgecolor (str): Edge color for histogram bars.
+    ----------
+    all_satellite_data_list : list
+        List of satellite dictionaries, each containing 'Elevations'.
+    font_family : str
+        Font family for plot text.
+    figsize : tuple
+        Figure size for matplotlib.
+    color : str
+        Bar fill color.
+    edgecolor : str
+        Edge color for histogram bars.
     """
     with plt.rc_context({"font.family": font_family}):
         max_elevations = []

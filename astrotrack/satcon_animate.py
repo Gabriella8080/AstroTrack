@@ -45,15 +45,25 @@ def animate_trajectories(
     Animate 3D satellite trajectories around Earth and save as GIF.
 
     Parameters:
-        all_satellite_data (list[dict]): Satellite data dictionaries (from preprocess module).
-        elev, azim (float): 3D view angles for the animation.
-        ref_points (list[tuple[str, float, float]]): Optional list of (label, lat, lon) reference locations.
-        duration_hours (float): Duration of animation window.
-        step_seconds (int): Time step between frames.
-        start_time (datetime): Start time of animation.
-        output_dir (str): Directory to save animation file.
-        filename_prefix (str): Prefix for output file name.
-        font_family (str): Font family for plot text.
+    ----------
+    all_satellite_data : list[dict]
+        Satellite data dictionaries (from preprocess module).
+    elev, azim : float
+        3D view angles for the animation.
+    ref_points : list[tuple[str, float, float]]
+        Optional list of (label, lat, lon) reference locations.
+    duration_hours : float
+        Duration of animation window.
+    step_seconds : int
+        Time step between frames.
+    start_time : datetime
+        Start time of animation.
+    output_dir : str
+        Directory to save animation file.
+    filename_prefix : str
+        Prefix for output file name.
+    font_family : str
+        Font family for plot text.
     """
     plt.rcParams["font.family"] = font_family
 

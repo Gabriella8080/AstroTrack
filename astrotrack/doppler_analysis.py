@@ -14,17 +14,24 @@ def plot_doppler_shifts(
     marker_color="deeppink",
     time_window=10,
 ):
-    """Plot the Doppler shifts for each satellite in separate subplots,
+    """
+    Plot the Doppler shifts for each satellite in separate subplots,
     centered around visibility midpoint.
 
     Parameters:
-         all_satellite_data (list[dict]): Satellite data dictionaries.
-         f0 (float): Transmission frequency [Hz].
-         font_family (str): Font family for plot text.
-         figsize (tuple): Figure size for each subplot.
-         marker_color (str): Color of scatter plot markers.
-         time_window (float): Half-width of x-axis around visibility [min].
-
+    ----------
+    all_satellite_data : list[dict]
+        Satellite data dictionaries.
+    f0 : float
+        Transmission frequency [Hz].
+    font_family : str
+        Font family for plot text.
+    figsize : tuple
+        Figure size for each subplot.
+    marker_color : str
+        Color of scatter plot markers.
+    time_window : float
+        Half-width of x-axis around visibility [min].
     """
     c = 3.0e5  # speed of light in km/s
     for satellite_data in all_satellite_data:
@@ -66,15 +73,20 @@ def plot_doppler_shifts(
 def check_doppler_resolution(
     all_satellite_data, f0_array, resolution=12_000, experiment="REACH", return_df=False
 ):
-    """Check if Doppler shift can be resolved,
+    """
+    Check if Doppler shift can be resolved,
     given experiment's frequency resolution.
 
     Parameters:
-     all_satellite_data (list[dict]): Satellite data dictionaries.
-     f0_array (array): Frequencies to test [Hz].
-     resolution (float): Frequency resolution of experiment [Hz].
-     experiment_name (str): Name of experiment.
-     return_df
+    ----------
+    all_satellite_data : list[dict]
+        Satellite data dictionaries.
+    f0_array : array
+        Frequencies to test [Hz].
+    resolution : float
+        Frequency resolution of experiment [Hz].
+    experiment_name : str
+        Name of experiment.
     """
     c = 3.0e5  # speed of light in km/s
     rows = []
