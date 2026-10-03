@@ -159,7 +159,7 @@ def plot_satellite_trajectory(
         ax.set_zlabel("z (km)")
         ax.view_init(elev, azim)
         ax.set_title(
-            rf"Satellite Trajectories:\n(elev={elev}$\degree$, azim={azim}$\degree$)"
+            rf"Satellite Trajectories: (elev={elev}$\degree$, azim={azim}$\degree$)"
         )
 
         plt.show(block=True)
@@ -233,8 +233,6 @@ def plot_flyover_histogram_by_norad(
         plt.grid(axis="y", alpha=0.3)
         plt.tight_layout()
         plt.show(block=True)
-
-        return passes_per_norad
 
 
 def plot_satellite_metric(
